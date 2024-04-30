@@ -1,0 +1,53 @@
+<h2 mat-dialog-title>Ajouter un Domaine</h2>
+<div mat-dialog-content>
+  <form #domainForm="ngForm" (ngSubmit)="addDomaine(domainForm)">
+    <div class="row">
+      <!-- Champ "name" -->
+      <div class="col-md-4 mb-3">
+        <label for="name">Name</label>
+        <input
+          type="text"
+          class="form-control"
+          id="name"
+          [(ngModel)]="newDomaine.name"
+          name="name"
+          required
+        />
+      </div>
+      <!-- Champ "lang" -->
+      <div class="col-md-4 mb-3">
+        <label for="lang">Language</label>
+        <input
+          type="text"
+          class="form-control"
+          id="lang"
+          [(ngModel)]="newDomaine.lang"
+          name="lang"
+          required
+        />
+      </div>
+      <!-- Champ "version" -->
+      <div class="col-md-4 mb-3">
+        <label for="version">Version</label>
+        <input
+          type="text"
+          class="form-control"
+          id="version"
+          [(ngModel)]="newDomaine.version"
+          name="version"
+          required
+        />
+      </div>
+    </div>
+    <div class="row justify-content-center">
+      <div class="col-auto">
+        <button type="submit" class="add-bouton mr-2">Enregistrer</button>
+      </div>
+      <div class="col-auto">
+        <button type="button" class="btn btn-secondary" (click)="closeDialog()">
+          Annuler
+        </button>
+      </div>
+    </div>
+  </form>
+</div>

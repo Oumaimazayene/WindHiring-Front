@@ -1,0 +1,211 @@
+<div class="pb-8 pt-5 pt-md-8">
+  <div class="container-fluid">
+    <div class="header-body">
+      <div class="row">
+        <div class="col-xl-3 col-lg-6">
+          <div class="card card-stats mb-4 mb-xl-0">
+            <div class="card-body">
+              <div class="row">
+                <div class="col">
+                  <h5 class="card-title text-uppercase text-muted mb-0">
+                    Traffic
+                  </h5>
+                  <span class="h2 font-weight-bold mb-0">350,897</span>
+                </div>
+                <div class="col-auto">
+                  <div
+                    class="icon icon-shape bg-danger text-white rounded-circle shadow"
+                  >
+                    <i class="fas fa-chart-bar"></i>
+                  </div>
+                </div>
+              </div>
+              <p class="mt-3 mb-0 text-muted text-sm">
+                <span class="text-success mr-2"
+                  ><i class="fa fa-arrow-up"></i> 3.48%</span
+                >
+                <span class="text-nowrap">Since last month</span>
+              </p>
+            </div>
+          </div>
+        </div>
+        <div class="col-xl-3 col-lg-6">
+          <div class="card card-stats mb-4 mb-xl-0">
+            <div class="card-body">
+              <div class="row">
+                <div class="col">
+                  <h5 class="card-title text-uppercase text-muted mb-0">
+                    New users
+                  </h5>
+                  <span class="h2 font-weight-bold mb-0">2,356</span>
+                </div>
+                <div class="col-auto">
+                  <div
+                    class="icon icon-shape bg-warning text-white rounded-circle shadow"
+                  >
+                    <i class="fas fa-chart-pie"></i>
+                  </div>
+                </div>
+              </div>
+              <p class="mt-3 mb-0 text-muted text-sm">
+                <span class="text-danger mr-2"
+                  ><i class="fas fa-arrow-down"></i> 3.48%</span
+                >
+                <span class="text-nowrap">Since last week</span>
+              </p>
+            </div>
+          </div>
+        </div>
+        <div class="col-xl-3 col-lg-6">
+          <div class="card card-stats mb-4 mb-xl-0">
+            <div class="card-body">
+              <div class="row">
+                <div class="col">
+                  <h5 class="card-title text-uppercase text-muted mb-0">
+                    Sales
+                  </h5>
+                  <span class="h2 font-weight-bold mb-0">924</span>
+                </div>
+                <div class="col-auto">
+                  <div
+                    class="icon icon-shape bg-yellow text-white rounded-circle shadow"
+                  >
+                    <i class="fas fa-users"></i>
+                  </div>
+                </div>
+              </div>
+              <p class="mt-3 mb-0 text-muted text-sm">
+                <span class="text-warning mr-2"
+                  ><i class="fas fa-arrow-down"></i> 1.10%</span
+                >
+                <span class="text-nowrap">Since yesterday</span>
+              </p>
+            </div>
+          </div>
+        </div>
+        <div class="col-xl-3 col-lg-6">
+          <div class="card card-stats mb-4 mb-xl-0">
+            <div class="card-body">
+              <div class="row">
+                <div class="col">
+                  <h5 class="card-title text-uppercase text-muted mb-0">
+                    Performance
+                  </h5>
+                  <span class="h2 font-weight-bold mb-0">49,65%</span>
+                </div>
+                <div class="col-auto">
+                  <div
+                    class="icon icon-shape bg-info text-white rounded-circle shadow"
+                  >
+                    <i class="fas fa-percent"></i>
+                  </div>
+                </div>
+              </div>
+              <p class="mt-3 mb-0 text-muted text-sm">
+                <span class="text-success mr-2"
+                  ><i class="fas fa-arrow-up"></i> 12%</span
+                >
+                <span class="text-nowrap">Since last month</span>
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="container-fluid mt--7">
+  <div class="row">
+    <div class="col">
+      <div class="card shadow">
+        <div class="card-header border-0">
+          <h2 class="mb-0">Sections des Tests Technique</h2>
+          <div class="d-flex justify-content-end">
+            <button
+              type="button"
+              class="add-bouton"
+              (click)="openAddTestSectionTech()"
+            >
+              Ajouter
+            </button>
+          </div>
+        </div>
+        <div class="table-responsive">
+          <table class="table align-items-center table-flush">
+            <thead class="thead-light">
+              <tr>
+                <th scope="col">Titre</th>
+                <th scope="col">Éxperience</th>
+                <th scope="col">Difficulté</th>
+                <th scope="col">Nombre de questions</th>
+                <th scope="col">Question Privée</th>
+                <th scope="col">Detailles</th>
+                <th scope="col">Envoyer</th>
+              </tr>
+            </thead>
+            <tbody class="align-items-center">
+              <tr *ngFor="let testS of pagedTestSection">
+                <td>{{ testS.testsectionName }}</td>
+                <td>{{ testS.experience }}</td>
+                <td>{{ testS.difficulty }}</td>
+                <td class="align-middle text-center">{{ testS.qtsNumber }}</td>
+                <td>
+                  <div
+                    class="clickable-icon align-middle text-center"
+                    (click)="handleIconClick(testS.id)"
+                  >
+                    <i class="fas fa-unlock" style="font-size: 18px"></i>
+                  </div>
+                </td>
+                <td>
+                  <div class="row align-items-center">
+                    <div
+                      class="col-4 clickable-icon"
+                      (click)="openViewTestSectionTechDialog(testS.id)"
+                    >
+                      <i class="fas fa-eye" style="font-size: 18px"></i>
+                    </div>
+                    <div class="clickable-icon mr-3">
+                      <i class="fas fa-pencil-alt" style="font-size: 18px"></i>
+                    </div>
+                    <div class="clickable-icon">
+                      <i class="fas fa-trash-alt" style="font-size: 18px"></i>
+                    </div>
+                  </div>
+                </td>
+                <td class="text-center">
+                  <div class="clickable-icon">
+                    <i class="fas fa-file-export" style="font-size: 20px"></i>
+                  </div>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+          <div class="d-flex justify-content-between p-2 mt-2">
+            <ngb-pagination
+              [collectionSize]="totalItems"
+              [(page)]="currentPage"
+              [pageSize]="pageSize"
+              (pageChange)="pageChanged($event)"
+            >
+              <ng-template ngbPageLink let-pageIndex="page">
+                <a class="page-link">{{ pageIndex }}</a>
+              </ng-template>
+            </ngb-pagination>
+
+            <select
+              class="form-select form-control"
+              style="width: auto"
+              [(ngModel)]="pageSize"
+              (ngModelChange)="refreshQuestion()"
+            >
+              <option [ngValue]="5">5 Questions par page</option>
+              <option [ngValue]="10">10 Questions par page</option>
+              <option [ngValue]="50">50 Questions par page</option>
+            </select>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

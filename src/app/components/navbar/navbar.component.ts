@@ -1,0 +1,80 @@
+import { Component, OnInit, ElementRef } from "@angular/core";
+import { ROUTES } from "../sidebar/sidebar.component";
+import {
+  Location,
+  LocationStrategy,
+  PathLocationStrategy,
+} from "@angular/common";
+import { Router } from "@angular/router";
+import { UserService } from "src/app/service/user-service/user.service";
+import { User } from "src/app/Models/user";
+import { Observable } from "rxjs";
+import { AuthService } from "src/app/service/auth.service";
+import { HttpClient } from "@angular/common/http";
+
+@Component({
+  selector: "app-navbar",
+  templateUrl: "./navbar.component.html",
+  styleUrls: ["./navbar.component.scss"],
+})
+export class NavbarComponent implements OnInit {
+  public focus;
+  public listTitles: any[];
+  public location: Location;
+  public user: User; // Déclarez une variable pour stocker l'utilisateur
+
+  constructor(
+    location: Location,
+    private element: ElementRef,
+    private router: Router,
+    private userService: UserService,
+    private authService: AuthService,
+    private http: HttpClient
+  ) {
+    this.location = location;
+  }
+
+  ngOnInit() {
+    this.listTitles = ROUTES.filter((listTitle) => listTitle);
+    // Appel à la méthode getUserByUUID lorsque le composant est initialisé
+    this.getUserData();
+  }
+
+  getUserData() {
+    const uuid = this.authService.extractUUIDFromToken(); // Récupérer l'UUID à partir du token JWT
+    this.userService.getUserByUUID(uuid).subscribe(
+      (user: User) => {
+        this.user = user; // Affectez l'utilisateur récupéré à la variable user
+      },
+      (error) => {
+        console.error(
+          "Erreur lors de la récupération des données de l'utilisateur :",
+          error
+        );
+      }
+    );
+  }
+
+  getTitle() {
+    var titlee = this.location.prepareExternalUrl(this.location.path());
+    if (titlee.charAt(0) === "#") {
+      return titlee.slice(2);
+    }
+
+    for (var item = 0; item < this.listTitles.length; item++) {
+      if (this.listTitles[item].path === titlee) {
+        return this.listTitles[item].title;
+      }
+    }
+    return "Dashboard";
+  }
+
+  logout(): void {
+    this.authService.logout();
+  }
+  getImage(imageName: string): Observable<Blob> {
+    return this.http.get(`http://localhost:8090/image/${imageName}`, {
+      responseType: "blob",
+    });
+  }
+}

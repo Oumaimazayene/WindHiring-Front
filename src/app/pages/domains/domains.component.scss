@@ -1,0 +1,47 @@
+// styles.scss
+
+// Importez les styles de ngx-toastr
+@import "~ngx-toastr/toastr.css";
+
+// Personnalisation des styles de la popup
+.toast-success {
+  background-color: #4caf50; // Couleur de fond pour la notification de succès
+  color: #fff; // Couleur du texte pour la notification de succès
+}
+
+.toast-error {
+  background-color: #f44336; // Couleur de fond pour la notification d'erreur
+  color: #fff; // Couleur du texte pour la notification d'erreur
+}
+
+// Personnalisation de l'apparence de la popup
+.simple-notification {
+  border-radius: 5px; // Bord arrondi de la notification
+  font-family: Arial, sans-serif; // Police de caractères
+  font-size: 14px; // Taille de la police
+  line-height: 1.5; // Hauteur de ligne
+  padding: 10px 15px; // Remplissage intérieur de la notification
+}
+.add-bouton {
+  color: #1c1c2b;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 16px;
+  font-weight: bold;
+
+  background-color: #efcc0b; /* Fallback pour les navigateurs ne prenant pas en charge les dégradés */
+}
+.add-bouton:hover {
+  border-color: white;
+}
+
+.clickable-icon {
+  cursor: pointer;
+  color: #0f1129;
+}
+
+.clickable-icon:hover {
+  color: #eab308;
+}

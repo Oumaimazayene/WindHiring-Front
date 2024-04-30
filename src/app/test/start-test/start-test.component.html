@@ -1,0 +1,211 @@
+<mat-toolbar>
+  <img src="../../../assets/img/brand/red.png" alt="" class="toolbar-logo" />
+
+  <span class="toolbar-space"></span>
+
+  <!-- Insérez d'autres éléments de la barre d'outils si nécessaire -->
+</mat-toolbar>
+
+<ng-container *ngIf="!alreadySubmitted">
+  <ng-container *ngIf="!ended">
+    <div class="left">
+      <div class="row header class-hedaer">
+        <div class="col-md-6">
+          <span class="question-num">
+            <i class="fa fa-question-circle" aria-hidden="true"></i> Question
+            {{ currentQuestion + 1 }} / {{ questionNumber }}
+            <i class="fa fa-minus" aria-hidden="true"></i>
+            {{ questionList[currentQuestion]?.domains?.lang }}
+          </span>
+        </div>
+        <div class="col-md-6 text-right">
+          <span class="elapsed-time">
+            <i class="fa-solid fa-stopwatch"></i> Elapsed Time :
+          </span>
+          <!-- {{counter | formatTime}} -->
+
+          <countdown
+            [config]="{ leftTime: counter, format: 'mm:ss', notify: 10 }"
+            [style.color]="color"
+          ></countdown>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="NgxEditor__Wrapper">
+          <ngx-editor-menu [editor]="editor" [toolbar]="toolbar">
+          </ngx-editor-menu>
+          <ngx-editor
+            name="html"
+            [editor]="editor"
+            [(ngModel)]="htmlContent"
+            [disabled]="true"
+          ></ngx-editor>
+        </div>
+      </div>
+      <br /><br /><br />
+    </div>
+
+    <div class="right" *ngIf="questionType === 'Qcm'">
+      <div class="row class-hedaer">
+        <div class="col-md-4">
+          <span class="question-num">
+            <i class="fa fa-reply" aria-hidden="true"></i>
+            Réponses
+          </span>
+        </div>
+      </div>
+      <div class="body">
+        <strong>Select your answer(s):</strong>
+        <div
+          class="row answer-list"
+          *ngFor="
+            let item of questionList[currentQuestion]?.answerList;
+            let i = index
+          "
+        >
+          <div class="col-md-1">{{ i + 1 }}-</div>
+          <div class="col-md-7">
+            <span>{{ item.answer }}</span>
+          </div>
+          <div class="col-md-4 text-right">
+            <div class="form-check form-check-inline">
+              <input
+                class="form-check-input"
+                type="checkbox"
+                id="inlineCheckbox1"
+                (change)="checkCheckBoxvalue($event, item, i)"
+              />
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="row justify-content-center btn-row">
+        <button
+          type="button "
+          class="btn btn-warning next-btn"
+          *ngIf="!isCompleted"
+        >
+          <i class="fa fa-chevron-circle-right text-dark" aria-hidden="true"></i
+          >Next Question
+        </button>
+        <button
+          type="button "
+          class="btn btn-warning next-btn"
+          *ngIf="isCompleted"
+        >
+          <i class="fa fa-chevron-circle-right text-dark" aria-hidden="true"></i
+          >submit test
+        </button>
+      </div>
+    </div>
+
+    <div class="right" *ngIf="questionType === 'Text'">
+      <div class="row class-hedaer">
+        <div class="col-md-4">
+          <span class="question-num">
+            <i class="fa fa-reply" aria-hidden="true"></i>
+            Réponses
+          </span>
+        </div>
+      </div>
+      <div class="body">
+        <div class="row">
+          <textarea
+            name="answer"
+            id=""
+            cols="30"
+            rows="5"
+            class="form-control"
+            [(ngModel)]="textAnswer.answer"
+          ></textarea>
+        </div>
+        <div class="row">
+          <button
+            type="button "
+            class="btn btn-warning next-btn"
+            *ngIf="!isCompleted"
+          >
+            <i
+              class="fa fa-chevron-circle-right text-dark"
+              aria-hidden="true"
+            ></i
+            >Next Question
+          </button>
+          <button
+            type="button "
+            class="btn btn-warning next-btn"
+            *ngIf="isCompleted"
+          >
+            <i
+              class="fa fa-chevron-circle-right text-dark"
+              aria-hidden="true"
+            ></i
+            >submit test
+          </button>
+        </div>
+      </div>
+    </div>
+  </ng-container>
+
+  <ng-container *ngIf="ended">
+    <div class="container">
+      <div class="card">
+        <div class="row">
+          <div class="col-md-6">
+            <h1>Test Completed !</h1>
+            <br />
+            <h3>Your test has been submitted Succeffuly !</h3>
+            <br />
+            <a href="#"> See your test repport!</a>
+          </div>
+          <div class="col-md-6"></div>
+        </div>
+      </div>
+    </div>
+  </ng-container>
+</ng-container>
+
+<ng-container *ngIf="alreadySubmitted">
+  <div class="container container-submitted">
+    <div class="card">
+      <div class="card-header">
+        <span
+          ><i class="fa-solid fa-triangle-exclamation"></i> Test Already
+          Submitted</span
+        >
+      </div>
+      <div class="card-body text-center">
+        <div class="row">
+          <div class="col-md-12">
+            <span class="text-left">
+              <i class="fa-solid fa-circle-exclamation"></i>
+              This Test Is Already Submitted !
+            </span>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-12">
+            <span class="text-right">
+              You can't submitted the same Test more than one time !
+            </span>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-12">
+            <span class="warning">
+              If you didn't submitted your test , Please verify the link in your
+              Email.
+            </span>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-12">
+            <div class="btn home-btn" routerLink="/auth/home">Home Page</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</ng-container>
