@@ -2,6 +2,7 @@ import { Component, Inject, OnInit } from "@angular/core";
 import { FormBuilder, FormGroup, Validators } from "@angular/forms";
 import { MatDialogRef, MAT_DIALOG_DATA } from "@angular/material/dialog";
 import { TestService } from "src/app/service/test-service/test.service";
+import { TestSectionLogiqueService } from "src/app/service/testSection_logique-service/test-section-logique-service.service";
 
 @Component({
   selector: "app-add-test-logique",
@@ -11,10 +12,15 @@ import { TestService } from "src/app/service/test-service/test.service";
 export class AddTestLogiqueComponent implements OnInit {
   newTestLogForm: FormGroup;
   testSectionUUID: string;
+  successMessage: string = "";
+  testSection: any = {};
+  qtsNumber: number;
+  errorMessage: string = "";
 
   constructor(
     private dialogRef: MatDialogRef<AddTestLogiqueComponent>,
     private formBuilder: FormBuilder,
+    private TestSectionLogiqueService: TestSectionLogiqueService,
     private testService: TestService,
     @Inject(MAT_DIALOG_DATA) private data: any
   ) {
@@ -22,28 +28,72 @@ export class AddTestLogiqueComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    this.initializeForm();
+    this.getTestSection();
+  }
+
+  initializeForm(): void {
     this.newTestLogForm = this.formBuilder.group({
       size: ["", [Validators.required, Validators.min(0)]],
       privateqts: ["", [Validators.required, Validators.min(0)]],
     });
-    console.log("testUUId", this.testSectionUUID);
   }
 
   closeDialog(): void {
     this.dialogRef.close();
   }
 
+  getTestSection(): void {
+    this.TestSectionLogiqueService.getTestSectionByUUID(
+      this.testSectionUUID
+    ).subscribe(
+      (testSection) => {
+        if (testSection) {
+          this.testSection = testSection;
+          console.log("testSection ok ", this.testSection);
+
+          this.qtsNumber = this.testSection.qtsNumber;
+        } else {
+          console.error(
+            "La section de test avec l'UUID spécifié n'a pas été trouvée."
+          );
+        }
+      },
+      (error) => {
+        console.error(
+          "Erreur lors de la récupération de la section de test :",
+          error
+        );
+      }
+    );
+  }
+
   onSubmit(): void {
     if (this.newTestLogForm.valid) {
       const { size, privateqts } = this.newTestLogForm.value;
+      const totalQuestions = size + privateqts;
+      if (totalQuestions > this.qtsNumber) {
+        this.errorMessage =
+          "Le nombre total de questions dépasse le nombre attendu.";
+        return;
+      }
+
       this.testService
         .createTestLog(this.testSectionUUID, size, privateqts)
         .subscribe(
           (data) => {
-            console.log("Test logique créé :", data);
-            this.dialogRef.close();
+            console.log(
+              "Réponse de l'API après la création du test logique :",
+              data
+            );
+            this.successMessage = "Test logique créé avec succès.";
+            setTimeout(() => {
+              this.dialogRef.close();
+            }, 2000);
           },
           (error) => {
+            this.errorMessage =
+              "Erreur lors de la création du test logique : " + error.message;
             console.error(
               "Erreur lors de la création du test logique :",
               error
@@ -51,7 +101,7 @@ export class AddTestLogiqueComponent implements OnInit {
           }
         );
     } else {
-      console.log("Veuillez remplir tous les champs correctement.");
+      this.errorMessage = "Veuillez remplir tous les champs correctement.";
     }
   }
 }

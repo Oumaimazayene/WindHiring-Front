@@ -23,8 +23,8 @@ export class AuthLayoutComponent implements OnInit, OnDestroy {
   }
   ngOnDestroy() {
     var html = document.getElementsByTagName("html")[0];
-    html.classList.remove("auth-layout");
+    html.classList.remove("gbgradien");
     var body = document.getElementsByTagName("body")[0];
-    body.classList.remove("bg-default");
+    body.classList.remove("gbgradien");
   }
 }

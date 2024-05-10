@@ -56,16 +56,18 @@ export class NavbarComponent implements OnInit {
   }
 
   getTitle() {
-    var titlee = this.location.prepareExternalUrl(this.location.path());
-    if (titlee.charAt(0) === "#") {
-      return titlee.slice(2);
-    }
+    const url = this.location.prepareExternalUrl(this.location.path());
 
-    for (var item = 0; item < this.listTitles.length; item++) {
-      if (this.listTitles[item].path === titlee) {
-        return this.listTitles[item].title;
+    const specialCases = {
+      "/LISTE-DES-TESTS/": "Liste des tests",
+    };
+
+    for (const [path, title] of Object.entries(specialCases)) {
+      if (url.includes(path)) {
+        return title;
       }
     }
+
     return "Dashboard";
   }
 

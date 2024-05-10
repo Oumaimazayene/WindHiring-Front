@@ -77,4 +77,11 @@ export class TestSectionLogiqueService {
       formData
     );
   }
+  getTestSectionByUUID(testSectionUUID: string): Observable<any[]> {
+    const url = `${this.baseUrl}/testSectionuuid/${testSectionUUID}`;
+    return this.http.get<any[]>(url);
+  }
+  countTestSectionsByUserUUID(userUUID: string): Observable<number> {
+    return this.http.get<number>(`${this.baseUrl}/count/${userUUID}`);
+  }
 }

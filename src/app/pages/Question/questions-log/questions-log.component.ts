@@ -21,6 +21,7 @@ export class QuestionsLogComponent implements OnInit {
   filterType: string | null = null;
   filterDifficulty: string | null = null;
   difficulties: string[] = ["EASY", "MEDIUM", "HARD"];
+  nombreQuestionsLogiques: number;
 
   constructor(
     private questionLogicService: QuestionLogicService,
@@ -29,6 +30,7 @@ export class QuestionsLogComponent implements OnInit {
 
   ngOnInit(): void {
     this.getAllQuestions();
+    this.getNombreQuestionsLogiques();
   }
 
   getAllQuestions(): void {
@@ -52,6 +54,11 @@ export class QuestionsLogComponent implements OnInit {
       (question) => {
         const dialogRef = this.dialog.open(ViewQuestionLogDialogComponent, {
           data: question,
+          maxHeight: "80vh",
+          maxWidth: "80vw",
+          height: "80%",
+          width: "80%",
+          panelClass: "centered-dialog",
         });
 
         dialogRef.afterClosed().subscribe(() => {});
@@ -151,5 +158,18 @@ export class QuestionsLogComponent implements OnInit {
           );
         }
       );
+  }
+  getNombreQuestionsLogiques(): void {
+    this.questionLogicService.countLogiqueQuestions().subscribe(
+      (count) => {
+        this.nombreQuestionsLogiques = count;
+      },
+      (error) => {
+        console.error(
+          "Erreur lors de la récupération du nombre de questions logiques :",
+          error
+        );
+      }
+    );
   }
 }

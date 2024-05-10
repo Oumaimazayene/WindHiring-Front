@@ -10,7 +10,8 @@ import { QuestionpriveLogComponent } from "src/app/pages/QuestionPrivée/Questio
 import { AuthGuardService } from "src/app/service/auth-guard.service";
 import { TestSectionTechComponent } from "src/app/pages/TestSection/TestSection -Tech/test-section-tech/test-section-tech.component";
 import { QuestionTechPriveComponent } from "src/app/pages/QuestionPrivée/QuestionTech/question-tech-prive/question-tech-prive.component";
-import { StartTestComponent } from "src/app/test/start-test/start-test.component";
+import { ListTestComponent } from "../../pages/TestSection/list-test/list-test.component";
+import { ListTestTechComponent } from "src/app/pages/TestSection/TestSection -Tech/list-test-tech/list-test-tech.component";
 
 export const AdminLayoutRoutes: Routes = [
   {
@@ -61,6 +62,16 @@ export const AdminLayoutRoutes: Routes = [
   {
     path: "questionprivee-Tech/:id",
     component: QuestionTechPriveComponent,
+    canActivate: [AuthGuardService],
+  },
+  {
+    path: "liste-des-Tests/:testSectionUUID",
+    component: ListTestComponent,
+    canActivate: [AuthGuardService],
+  },
+  {
+    path: "liste-des-Tests-Tech/:testSectionUUID",
+    component: ListTestTechComponent,
     canActivate: [AuthGuardService],
   },
 ];

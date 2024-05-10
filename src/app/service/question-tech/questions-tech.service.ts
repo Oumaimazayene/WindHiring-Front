@@ -1,5 +1,5 @@
 import { Injectable } from "@angular/core";
-import { HttpClient, HttpHeaders } from "@angular/common/http";
+import { HttpClient, HttpHeaders, HttpParams } from "@angular/common/http";
 import { Observable, catchError, throwError } from "rxjs";
 import { questionTech } from "src/app/Models/questionTech";
 
@@ -55,5 +55,28 @@ export class QuestionsTechService {
         return throwError(error);
       })
     );
+  }
+  filterTechnicalQuestionsByTypeAndDifficultyAndDomainName(
+    type: string,
+    difficulty: string,
+    domainName: string
+  ): Observable<any[]> {
+    let params = new HttpParams();
+    if (type) {
+      params = params.set("type", type);
+    }
+    if (difficulty) {
+      params = params.set("difficulty", difficulty);
+    }
+    if (domainName) {
+      params = params.set("domainName", domainName);
+    }
+
+    return this.http.get<questionTech[]>(`${this.baseUrl}/technical/filter`, {
+      params: params,
+    });
+  }
+  countTechnicalQuestions(): Observable<number> {
+    return this.http.get<number>(`${this.baseUrl}/technical/count`);
   }
 }

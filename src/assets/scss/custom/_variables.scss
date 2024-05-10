@@ -81,7 +81,7 @@ $colors: map-merge(
 );
 
 $default: #172b4d !default;
-$primary: #5e72e4 !default;
+$primary: #050a24 !default;
 $secondary: #f7fafc !default;
 $success: $green !default;
 $info: $teal !default;
@@ -882,9 +882,9 @@ $pagination-hover-color: $gray-600 !default;
 $pagination-hover-bg: $gray-300 !default;
 $pagination-hover-border-color: $gray-300 !default;
 
-$pagination-active-color: $component-active-color !default;
-$pagination-active-bg: $component-active-bg !default;
-$pagination-active-border-color: $pagination-active-bg !default;
+//$pagination-active-color: $black !default;
+$pagination-active-bg: $wind1 !default;
+//$pagination-active-border-color: $pagination-active-bg !default;
 $pagination-active-box-shadow: $btn-hover-box-shadow !default;
 
 $pagination-disabled-color: $gray-600 !default;

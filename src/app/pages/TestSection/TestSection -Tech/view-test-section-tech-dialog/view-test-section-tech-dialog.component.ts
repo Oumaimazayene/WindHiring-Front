@@ -47,5 +47,7 @@ export class ViewTestSectionTechDialogComponent implements OnInit {
   closeDialog(): void {
     this.dialogRef.close();
   }
+  
+ 
 
 }

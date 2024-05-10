@@ -8,8 +8,8 @@ import { MatDialog } from "@angular/material/dialog";
 import { Router } from "@angular/router";
 import { questionLog } from "src/app/Models/questionLog";
 import { Observable, catchError, throwError } from "rxjs";
-import { TestService } from "src/app/service/test-service/test.service";
-import { AddTestLogiqueComponent } from "./add-test-logique/add-test-logique.component";
+import { TestLogique } from "src/app/Models/TestLogique";
+import { TestService } from "../../../service/test-service/test.service";
 
 @Component({
   selector: "app-test-section-logique",
@@ -24,19 +24,20 @@ export class TestSectionLogiqueComponent implements OnInit {
   pageSize: number = 5;
   totalItems: number = 0;
   newSection: TestSectionLogique = {};
+  tests: TestSectionLogique[] = [];
+  nombreSectionsTest: number;
 
   constructor(
     private testSectionLogiqueService: TestSectionLogiqueService,
-    private userService: UserService,
     private authService: AuthService,
     private dialog: MatDialog,
-    private router: Router,
-    private testService: TestService
+    private router: Router
   ) {}
 
   ngOnInit(): void {
     const uuid = this.authService.extractUUIDFromToken();
     this.getTestSectionsByUserUUID(uuid);
+    this.getCountTestSectionsByUserUUID(uuid);
   }
 
   getTestSectionsByUserUUID(userUUID: string): void {
@@ -122,35 +123,27 @@ export class TestSectionLogiqueComponent implements OnInit {
       );
   }
 
-  openAddTestLogDialog(testSectionUUID: string): void {
-    const dialogRef = this.dialog.open(AddTestLogiqueComponent, {
-      data: { testSectionUUID },
-    });
-
-    dialogRef
-      .afterClosed()
-      .subscribe((result: { size: number; privateqts: number } | undefined) => {
-        if (result) {
-          this.createTestLog(testSectionUUID, result.size, result.privateqts);
-        }
-      });
+  openListDesTest(testSectionUUID: string): void {
+    this.router.navigateByUrl(`/liste-des-Tests/${testSectionUUID}`);
   }
 
-  createTestLog(
-    testSectionUUID: string,
-    size: number,
-    privateqts: number
-  ): void {
-    this.testService.createTestLog(testSectionUUID, size, privateqts).subscribe(
-      (data) => {
-        console.log("Test logique créé :", data);
-      },
-      (error) => {
-        console.error("Erreur lors de la création du test logique :", error);
-        console.log("testsectionlogiqueuuid", testSectionUUID);
-        console.log("size", size);
-        console.log("private", privateqts);
-      }
-    );
+  getCountTestSectionsByUserUUID(userUUID: string): void {
+    this.testSectionLogiqueService
+      .countTestSectionsByUserUUID(userUUID)
+      .subscribe(
+        (count: number) => {
+          this.nombreSectionsTest = count;
+          console.log(
+            "Nombre de sections de test pour l'utilisateur :",
+            this.nombreSectionsTest
+          );
+        },
+        (error) => {
+          console.error(
+            "Une erreur est survenue lors de la récupération du nombre de sections de test :",
+            error
+          );
+        }
+      );
   }
 }

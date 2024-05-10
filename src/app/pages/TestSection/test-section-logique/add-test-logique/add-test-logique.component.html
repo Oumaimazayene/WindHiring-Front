@@ -45,6 +45,10 @@
   </div>
   <div class="row justify-content-center mt-3">
     <div class="col-auto">
+      <div *ngIf="errorMessage" class="alert text-danger">
+        {{ errorMessage }}
+      </div>
+
       <button
         type="submit"
         class="btn en-bouton"

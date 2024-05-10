@@ -2,111 +2,55 @@
   <div class="container-fluid">
     <div class="header-body">
       <!-- Card stats -->
-      <div class="row">
-        <div class="col-xl-3 col-lg-6">
+      <div class="row justify-content-center align-items-center">
+        <div class="col-xl-4 col-lg-6">
           <div class="card card-stats mb-4 mb-xl-0">
             <div class="card-body">
               <div class="row">
                 <div class="col">
                   <h5 class="card-title text-uppercase text-muted mb-0">
-                    Traffic
+                    Question Technique
                   </h5>
-                  <span class="h2 font-weight-bold mb-0">350,897</span>
+                  <span class="h2 font-weight-bold mb-0">{{
+                    technicalQuestionsCount
+                  }}</span>
                 </div>
                 <div class="col-auto">
                   <div
-                    class="icon icon-shape bg-danger text-white rounded-circle shadow"
+                    class="icon icon-shape bg-default text-white rounded-circle shadow"
                   >
-                    <i class="fas fa-chart-bar"></i>
+                    <i class="fa-regular fa-file-code"></i>
                   </div>
                 </div>
               </div>
               <p class="mt-3 mb-0 text-muted text-sm">
-                <span class="text-success mr-2"
-                  ><i class="fa fa-arrow-up"></i> 3.48%</span
-                >
-                <span class="text-nowrap">Since last month</span>
+                <span>voir plus..</span>
               </p>
             </div>
           </div>
         </div>
-        <div class="col-xl-3 col-lg-6">
+        <div class="col-xl-4 col-lg-6">
           <div class="card card-stats mb-4 mb-xl-0">
             <div class="card-body">
               <div class="row">
                 <div class="col">
                   <h5 class="card-title text-uppercase text-muted mb-0">
-                    New users
+                    Domaines
                   </h5>
-                  <span class="h2 font-weight-bold mb-0">2,356</span>
+                  <span class="h2 font-weight-bold mb-0">{{
+                    domainsCount
+                  }}</span>
                 </div>
                 <div class="col-auto">
                   <div
-                    class="icon icon-shape bg-warning text-white rounded-circle shadow"
+                    class="icon icon-shape bg-default text-white rounded-circle shadow"
                   >
-                    <i class="fas fa-chart-pie"></i>
+                    <i class="fa-brands fa-java"></i>
                   </div>
                 </div>
               </div>
               <p class="mt-3 mb-0 text-muted text-sm">
-                <span class="text-danger mr-2"
-                  ><i class="fas fa-arrow-down"></i> 3.48%</span
-                >
-                <span class="text-nowrap">Since last week</span>
-              </p>
-            </div>
-          </div>
-        </div>
-        <div class="col-xl-3 col-lg-6">
-          <div class="card card-stats mb-4 mb-xl-0">
-            <div class="card-body">
-              <div class="row">
-                <div class="col">
-                  <h5 class="card-title text-uppercase text-muted mb-0">
-                    Sales
-                  </h5>
-                  <span class="h2 font-weight-bold mb-0">924</span>
-                </div>
-                <div class="col-auto">
-                  <div
-                    class="icon icon-shape bg-yellow text-white rounded-circle shadow"
-                  >
-                    <i class="fas fa-users"></i>
-                  </div>
-                </div>
-              </div>
-              <p class="mt-3 mb-0 text-muted text-sm">
-                <span class="text-warning mr-2"
-                  ><i class="fas fa-arrow-down"></i> 1.10%</span
-                >
-                <span class="text-nowrap">Since yesterday</span>
-              </p>
-            </div>
-          </div>
-        </div>
-        <div class="col-xl-3 col-lg-6">
-          <div class="card card-stats mb-4 mb-xl-0">
-            <div class="card-body">
-              <div class="row">
-                <div class="col">
-                  <h5 class="card-title text-uppercase text-muted mb-0">
-                    Performance
-                  </h5>
-                  <span class="h2 font-weight-bold mb-0">49,65%</span>
-                </div>
-                <div class="col-auto">
-                  <div
-                    class="icon icon-shape bg-info text-white rounded-circle shadow"
-                  >
-                    <i class="fas fa-percent"></i>
-                  </div>
-                </div>
-              </div>
-              <p class="mt-3 mb-0 text-muted text-sm">
-                <span class="text-success mr-2"
-                  ><i class="fas fa-arrow-up"></i> 12%</span
-                >
-                <span class="text-nowrap">Since last month</span>
+                <span>voir plus..</span>
               </p>
             </div>
           </div>
@@ -119,32 +63,73 @@
 <div class="container-fluid mt--7">
   <!-- Table -->
   <div class="row">
-    <div class="col-xl-8">
+    <div class="col-xl-12">
       <div class="card shadow">
-        <div
-          class="card-header border-0 d-flex align-items-center justify-content-between"
-        >
+        <div class="card-header border-0">
           <div class="d-flex align-items-center">
-            <i class="far fa-question-circle mr-2"></i>
-            <!-- Utilisation de la classe "far" pour les icônes régulières -->
+            <i class="fa-solid fa-question mr-2" style="font-size: 20px"></i>
             <h2 class="mb-0">Questions Techniques publique</h2>
+            <div class="ml-auto">
+              <button
+                type="button"
+                class="add-bouton"
+                (click)="openAddQuestionTechDialog()"
+              >
+                Ajouter
+              </button>
+            </div>
           </div>
 
-          <button
-            type="button"
-            class="addbtn"
-            (click)="openAddQuestionTechDialog()"
-          >
-            Ajouter
-          </button>
+          <div class="d-flex justify-content-end align-items-center mt-2 mb-0">
+            <div class="mr-3" style="width: 150px">
+              <mat-form-field appearance="fill" style="width: 100%">
+                <mat-label>Filtrer par Type :</mat-label>
+                <input
+                  matInput
+                  [(ngModel)]="filterType"
+                  (input)="filterQuestion()"
+                  placeholder="Entrez le type..."
+                />
+              </mat-form-field>
+            </div>
+            <div class="mr-3" style="width: 150px">
+              <mat-form-field appearance="fill" style="width: 100%">
+                <mat-label>Filtrer par Difficulté :</mat-label>
+                <mat-select
+                  [(ngModel)]="filterDifficulty"
+                  (selectionChange)="filterQuestion()"
+                >
+                  <mat-option [value]="''"
+                    >-- Sélectionner la difficulté --</mat-option
+                  >
+                  <mat-option
+                    *ngFor="let difficulty of difficulties"
+                    [value]="difficulty"
+                  >
+                    {{ difficulty }}
+                  </mat-option>
+                </mat-select>
+              </mat-form-field>
+            </div>
+            <div class="mr-3" style="width: 150px" *ngIf="domaines">
+              <mat-form-field appearance="fill" style="width: 100%">
+                <mat-label>Filtrer par Domaine :</mat-label>
+                <mat-select
+                  [(ngModel)]="fiterDomain"
+                  (selectionChange)="filterQuestion()"
+                >
+                  <mat-option [value]="''"
+                    >-- Sélectionner le domaine --</mat-option
+                  >
+                  <mat-option *ngFor="let domain of domaines" [value]="domain">
+                    {{ domain }}
+                  </mat-option>
+                </mat-select>
+              </mat-form-field>
+            </div>
+          </div>
         </div>
 
-        <div class="col-md-2 text-right">
-          <i
-            class="fa-solid fa-file-circle-question"
-            style="font-size: 18px"
-          ></i>
-        </div>
         <div class="table-responsive">
           <table class="table align-items-center table-flush">
             <thead class="thead-light">
@@ -159,10 +144,10 @@
             <tbody>
               <tr *ngFor="let question of pagedQuestions">
                 <td>{{ question.title }}</td>
-                <td>{{ question.type.name }}</td>
-                <td>{{ question.domain.name }}</td>
-                <td>{{ question.difficulty }}</td>
-                <td>
+                <td style="text-align: center">{{ question.type.name }}</td>
+                <td style="text-align: center">{{ question.domain.name }}</td>
+                <td style="text-align: center">{{ question.difficulty }}</td>
+                <td class="d-flex justify-content-center">
                   <div class="row">
                     <div
                       class="col-4 clickable-icon"
@@ -174,13 +159,10 @@
                       class="col-4 clickable-icon"
                       (click)="openUpdateQuestionDialog(question.id)"
                     >
-                      <i class="fas fa-pencil-alt" style="font-size: 18px"></i>
-                    </div>
-                    <div
-                      class="col-4 clickable-icon"
-                      (click)="openDeleteQuestionDialog(question.id)"
-                    >
-                      <i class="fas fa-trash-alt" style="font-size: 18px"></i>
+                      <i
+                        class="fa-regular fa-pen-to-square"
+                        style="font-size: 18px"
+                      ></i>
                     </div>
                   </div>
                 </td>
@@ -212,9 +194,6 @@
           </div>
         </div>
       </div>
-    </div>
-    <div class="col-xl-4">
-      <app-type></app-type>
     </div>
   </div>
 </div>

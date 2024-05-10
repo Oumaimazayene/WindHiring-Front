@@ -47,6 +47,13 @@ const routes: Routes = [
     path: "test",
     loadChildren: () => import("./test/test.module").then((m) => m.TestModule),
   },
+  {
+    path: "",
+    loadChildren: () =>
+      import("./register-response/register-response.module").then(
+        (m) => m.RegisterResponseModule
+      ),
+  },
 ];
 
 @NgModule({

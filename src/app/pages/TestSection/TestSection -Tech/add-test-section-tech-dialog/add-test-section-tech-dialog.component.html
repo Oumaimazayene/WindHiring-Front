@@ -88,7 +88,7 @@
         >
           <option value="">Sélectionnez un domaine</option>
           <option *ngFor="let domaine of domaines" [ngValue]="domaine">
-            {{ domaine.name }}
+            {{ domaine.name }}......{{ domaine.version }}
           </option>
         </select>
         <br />

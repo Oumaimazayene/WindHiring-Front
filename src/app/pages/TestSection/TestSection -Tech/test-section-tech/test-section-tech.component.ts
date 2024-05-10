@@ -116,4 +116,8 @@ export class TestSectionTechComponent implements OnInit {
   handleIconClick(testSectionId: number): void {
     this.router.navigate(["/questionprivee-Tech", testSectionId]);
   }
+
+  openListDesTestTech(testSectionUUID: string): void {
+    this.router.navigateByUrl(`/liste-des-Tests-Tech/${testSectionUUID}`);
+  }
 }

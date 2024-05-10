@@ -13,3 +13,23 @@ $primary-300-rgb: 253, 224, 71;
     var(--fuse-primary-300)
   );
 }
+.button-yellow {
+  background-color: #efcc0b;
+  color: black;
+  border: none;
+  padding: 10px 20px;
+  font-size: 16px;
+  cursor: pointer;
+  font-weight: normal;
+
+  transition: background-color 0.3s ease;
+  // border-radius: 9999px; /* Forme arrondie */
+}
+
+.button-yellow:hover {
+  background-color: goldenrod;
+}
+button:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+}

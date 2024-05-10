@@ -17,7 +17,6 @@ export class UserProfileComponent implements OnInit {
     firstname: "",
     lastname: "",
     email: "",
-    profileImg: "",
     societyName: "",
     logo: "",
     matricule_fiscale: "",
@@ -25,10 +24,8 @@ export class UserProfileComponent implements OnInit {
   };
   userId: number = 0;
   logoImage: string | ArrayBuffer | null = null;
-  profileImage: string | ArrayBuffer | null = null;
   showEditProfile: boolean = false;
   logoFile: File;
-  profileImgFile: File;
 
   constructor(
     private userService: UserService,
@@ -80,18 +77,6 @@ export class UserProfileComponent implements OnInit {
     }
   }
 
-  onProfileImgFileSelected(event: any): void {
-    const files = event.target.files;
-    if (files && files.length > 0) {
-      this.profileImgFile = files[0];
-      const reader = new FileReader();
-      reader.onload = (e) => {
-        this.profileImage = reader.result;
-      };
-      reader.readAsDataURL(this.profileImgFile);
-    }
-  }
-
   updateUser(): void {
     if (!this.userId) {
       console.error("L'ID de l'utilisateur est manquant.");
@@ -102,7 +87,6 @@ export class UserProfileComponent implements OnInit {
     formData.append("dtouserjson", JSON.stringify(this.userUpdate));
     console.log("aaaaa", this.userUpdate);
     formData.append("logoFile", this.logoFile);
-    formData.append("profileImgFile", this.profileImgFile);
     this.userService.updateUser(this.userId, formData).subscribe(
       (updatedUser) => {
         console.log("Utilisateur mis à jour avec succès :", updatedUser);

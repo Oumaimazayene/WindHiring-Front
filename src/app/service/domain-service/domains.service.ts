@@ -26,4 +26,7 @@ export class DomainsService {
     const url = `${this.apiUrl}/${id}`;
     return this.http.put<Domaine>(url, domaine);
   }
+  countDomains(): Observable<number> {
+    return this.http.get<number>(`${this.apiUrl}/count`);
+  }
 }

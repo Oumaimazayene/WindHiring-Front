@@ -63,26 +63,17 @@ div.label-box {
   background-color: #e83e8c;
 }
 
-select.languages-select {
-  cursor: pointer;
-}
-
-select.languages-select > option {
-  display: block;
-  background: ghostwhite;
-}
-
-select.languages-select:focus > option:checked {
-  font-weight: bold;
-}
-
 .btn-row {
   background-color: transparent;
 }
 
 .next-btn,
 .run-btn {
-  width: 100%;
+  position: fixed;
+  width: 30%;
+  background-color: #1c1c2b;
+  color: white;
+  font-family: normal;
 }
 
 .answer-list {
@@ -131,7 +122,7 @@ select.languages-select:focus > option:checked {
   background-color: rgba(197, 197, 197, 0.5);
 }
 // Styles pour la barre d'outils
-mat-toolbar {
+.mat-toolbar {
   height: 64px;
   padding: 0 16px;
   background-color: #1c1c2b;
@@ -145,4 +136,39 @@ mat-toolbar {
     // Permettre à cet élément de remplir tout l'espace disponible
     flex: 1;
   }
+}
+.button-container {
+  position: fixed;
+  bottom: 150px; /* Ajustez cette valeur selon vos besoins */
+  left: 50%;
+  transform: translateX(-50%);
+}
+.horizontal-meter {
+  display: flex;
+  justify-content: center;
+}
+
+.horizontal-meter meter {
+  width: 100%;
+}
+.elapsed-time {
+  color: inherit; /* Couleur par défaut */
+}
+
+.elapsed-time.red {
+  color: red; /* Couleur rouge */
+}
+.add-bouton {
+  color: #1c1c2b;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 16px;
+  font-weight: normal;
+
+  background-color: #efcc0b; /* Fallback pour les navigateurs ne prenant pas en charge les dégradés */
+}
+.add-bouton:hover {
+  border-color: white;
 }

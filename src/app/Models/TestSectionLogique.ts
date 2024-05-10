@@ -1,10 +1,10 @@
 export class TestSectionLogique {
   id?: number;
-  testsectionName?: String;
-  experience?: String;
-  difficulty?: String;
+  testsectionName?: string;
+  experience?: string;
+  difficulty?: string;
   qtsNumber?: number;
-  CreatedAt?: Date;
-  userUUID?: String;
-  uuid?: String;
+  createdAt?: Date;
+  userUUID?: string;
+  uuid?: string;
 }

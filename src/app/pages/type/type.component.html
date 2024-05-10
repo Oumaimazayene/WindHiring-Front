@@ -4,9 +4,7 @@
       <div
         class="card-header border-0 d-flex justify-content-between align-items-center"
       >
-        <i class="fas fa-bars" style="font-size: 18px"></i>
-
-        <h2 class="mb-0">Types des Questions</h2>
+        <h2 class="mb-0">List Des Types</h2>
         <button type="button" class="add-bouton" (click)="openAddTypeDialog()">
           Ajouter
         </button>
@@ -31,13 +29,10 @@
                     class="col-4 clickable-icon"
                     (click)="openUpdateDialog(type)"
                   >
-                    <i class="fas fa-pencil-alt" style="font-size: 18px"></i>
-                  </div>
-                  <div
-                    class="col-4 clickable-icon"
-                    (click)="openDeleteType(type.id)"
-                  >
-                    <i class="fas fa-trash-alt" style="font-size: 18px"></i>
+                    <i
+                      class="fa-regular fa-pen-to-square"
+                      style="font-size: 18px"
+                    ></i>
                   </div>
                 </div>
               </td>

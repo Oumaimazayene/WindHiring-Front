@@ -46,10 +46,15 @@ import { AddQuestionPriveeLogDialogComponent } from "./pages/QuestionPrivée/Que
 import { TestSectionTechComponent } from "./pages/TestSection/TestSection -Tech/test-section-tech/test-section-tech.component";
 import { ViewTestSectionTechDialogComponent } from "./pages/TestSection/TestSection -Tech/view-test-section-tech-dialog/view-test-section-tech-dialog.component";
 import { AddTestSectionTechDialogComponent } from "./pages/TestSection/TestSection -Tech/add-test-section-tech-dialog/add-test-section-tech-dialog.component";
-import { HomeComponent } from "./pages/home/home.component";
 import { QuestionTechPriveComponent } from "./pages/QuestionPrivée/QuestionTech/question-tech-prive/question-tech-prive.component";
 import { AddquestionTechPriveComponent } from "./pages/QuestionPrivée/QuestionTech/addquestion-tech-prive/addquestion-tech-prive.component";
-import { AddTestLogiqueComponent } from './pages/TestSection/test-section-logique/add-test-logique/add-test-logique.component';
+import { AddTestLogiqueComponent } from "./pages/TestSection/test-section-logique/add-test-logique/add-test-logique.component";
+import { ListTestComponent } from "./pages/TestSection/list-test/list-test.component";
+import { SendTestComponent } from "./pages/TestSection/list-test/send-test/send-test.component";
+import { TestdetailsComponent } from "./pages/TestSection/list-test/testdetails/testdetails.component";
+import { MatToolbarModule } from "@angular/material/toolbar";
+import { ListTestTechComponent } from "./pages/TestSection/TestSection -Tech/list-test-tech/list-test-tech.component";
+import { AddTestTechComponent } from "./pages/TestSection/TestSection -Tech/add-test-tech/add-test-tech.component";
 
 @NgModule({
   imports: [
@@ -73,6 +78,7 @@ import { AddTestLogiqueComponent } from './pages/TestSection/test-section-logiqu
     MatStepperModule,
     MatTabsModule,
     MatSelectModule,
+    MatToolbarModule,
   ],
   declarations: [
     AppComponent,
@@ -102,10 +108,14 @@ import { AddTestLogiqueComponent } from './pages/TestSection/test-section-logiqu
     TestSectionTechComponent,
     ViewTestSectionTechDialogComponent,
     AddTestSectionTechDialogComponent,
-    HomeComponent,
     QuestionTechPriveComponent,
     AddquestionTechPriveComponent,
     AddTestLogiqueComponent,
+    ListTestComponent,
+    SendTestComponent,
+    TestdetailsComponent,
+    ListTestTechComponent,
+    AddTestTechComponent,
   ],
   providers: [],
   bootstrap: [AppComponent],

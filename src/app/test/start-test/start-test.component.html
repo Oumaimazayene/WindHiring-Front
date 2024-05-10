@@ -1,52 +1,63 @@
 <mat-toolbar>
   <img src="../../../assets/img/brand/red.png" alt="" class="toolbar-logo" />
-
   <span class="toolbar-space"></span>
-
-  <!-- Insérez d'autres éléments de la barre d'outils si nécessaire -->
 </mat-toolbar>
-
 <ng-container *ngIf="!alreadySubmitted">
   <ng-container *ngIf="!ended">
     <div class="left">
-      <div class="row header class-hedaer">
+      <div class="row header class-hedaer" *ngIf="currentQuestion">
         <div class="col-md-6">
           <span class="question-num">
             <i class="fa fa-question-circle" aria-hidden="true"></i> Question
-            {{ currentQuestion + 1 }} / {{ questionNumber }}
-            <i class="fa fa-minus" aria-hidden="true"></i>
-            {{ questionList[currentQuestion]?.domains?.lang }}
+            {{ currentQuestionIndex + 1 }} / {{ questionList.length }}
           </span>
         </div>
         <div class="col-md-6 text-right">
-          <span class="elapsed-time">
-            <i class="fa-solid fa-stopwatch"></i> Elapsed Time :
+          <span
+            class="elapsed-time"
+            [ngStyle]="{ color: counter <= 10000 ? 'red' : 'inherit' }"
+          >
+            <i class="fas fa-stopwatch"></i> Temps écoulé :
           </span>
-          <!-- {{counter | formatTime}} -->
-
           <countdown
-            [config]="{ leftTime: counter, format: 'mm:ss', notify: 10 }"
-            [style.color]="color"
+            [config]="{
+              leftTime: counter,
+              format: 'mm:ss',
+              notify: 10
+            }"
+            (event)="onTimerFinished($event)"
+            [ngStyle]="{ color: counter <= 10000 ? 'red' : 'inherit' }"
           ></countdown>
         </div>
       </div>
 
-      <div class="row">
-        <div class="NgxEditor__Wrapper">
-          <ngx-editor-menu [editor]="editor" [toolbar]="toolbar">
-          </ngx-editor-menu>
-          <ngx-editor
-            name="html"
-            [editor]="editor"
-            [(ngModel)]="htmlContent"
-            [disabled]="true"
-          ></ngx-editor>
+      <div class="card" *ngIf="currentQuestion">
+        <div class="card-header">
+          <h2 class="card-title">
+            {{ currentQuestion.questionBody }}
+          </h2>
+        </div>
+        <div
+          class="card-body d-flex justify-content-center align-items-center"
+          *ngIf="currentQuestion"
+        >
+          <div class="mt-3">
+            <img
+              [src]="'http://localhost:8070/image/' + currentQuestion.urlimage"
+              alt="Question Image"
+              class="img-fluid"
+            />
+          </div>
         </div>
       </div>
-      <br /><br /><br />
     </div>
 
-    <div class="right" *ngIf="questionType === 'Qcm'">
+    <div
+      class="right"
+      *ngIf="
+        currentQuestion && (questionType === 'qcu' || questionType === 'qcm')
+      "
+    >
       <div class="row class-hedaer">
         <div class="col-md-4">
           <span class="question-num">
@@ -56,13 +67,13 @@
         </div>
       </div>
       <div class="body">
-        <strong>Select your answer(s):</strong>
+        <strong *ngIf="questionType === 'qcu'"
+          >Sélectionnez votre(s) réponse(s) :</strong
+        >
+        <strong *ngIf="questionType === 'qcm'">Select your answer(s):</strong>
         <div
           class="row answer-list"
-          *ngFor="
-            let item of questionList[currentQuestion]?.answerList;
-            let i = index
-          "
+          *ngFor="let item of currentQuestion?.answer; let i = index"
         >
           <div class="col-md-1">{{ i + 1 }}-</div>
           <div class="col-md-7">
@@ -72,9 +83,15 @@
             <div class="form-check form-check-inline">
               <input
                 class="form-check-input"
-                type="checkbox"
-                id="inlineCheckbox1"
-                (change)="checkCheckBoxvalue($event, item, i)"
+                [type]="questionType === 'qcu' ? 'radio' : 'checkbox'"
+                [id]="'answer_' + i"
+                [name]="'answer'"
+                [value]="item"
+                (change)="
+                  questionType === 'qcu'
+                    ? checkCheckBoxvalue($event, item, i)
+                    : checkCheckBoxvalueQCM($event, item, i)
+                "
               />
             </div>
           </div>
@@ -83,26 +100,34 @@
 
       <div class="row justify-content-center btn-row">
         <button
-          type="button "
-          class="btn btn-warning next-btn"
+          type="button"
+          class="btn next-btn"
           *ngIf="!isCompleted"
+          (click)="goToNextQuestion()"
         >
-          <i class="fa fa-chevron-circle-right text-dark" aria-hidden="true"></i
-          >Next Question
+          <i
+            class="fa fa-chevron-circle-right text-dark"
+            aria-hidden="true"
+          ></i>
+          Next Question
         </button>
         <button
-          type="button "
-          class="btn btn-warning next-btn"
-          *ngIf="isCompleted"
+          type="button"
+          class="btn next-btn"
+          *ngIf="allQuestionsAnswered && !alreadySubmitted"
+          (click)="testSubmit(); endTest()"
         >
-          <i class="fa fa-chevron-circle-right text-dark" aria-hidden="true"></i
-          >submit test
+          <i
+            class="fa fa-chevron-circle-right text-dark"
+            aria-hidden="true"
+          ></i>
+          Submit Test
         </button>
       </div>
     </div>
 
     <div class="right" *ngIf="questionType === 'Text'">
-      <div class="row class-hedaer">
+      <div class="row class-header">
         <div class="col-md-4">
           <span class="question-num">
             <i class="fa fa-reply" aria-hidden="true"></i>
@@ -118,56 +143,63 @@
             cols="30"
             rows="5"
             class="form-control"
-            [(ngModel)]="textAnswer.answer"
+            [(ngModel)]="submittedQuestion.candidateAnswer"
           ></textarea>
         </div>
-        <div class="row">
-          <button
-            type="button "
-            class="btn btn-warning next-btn"
-            *ngIf="!isCompleted"
-          >
-            <i
-              class="fa fa-chevron-circle-right text-dark"
-              aria-hidden="true"
-            ></i
-            >Next Question
-          </button>
-          <button
-            type="button "
-            class="btn btn-warning next-btn"
-            *ngIf="isCompleted"
-          >
-            <i
-              class="fa fa-chevron-circle-right text-dark"
-              aria-hidden="true"
-            ></i
-            >submit test
-          </button>
-        </div>
-      </div>
-    </div>
-  </ng-container>
-
-  <ng-container *ngIf="ended">
-    <div class="container">
-      <div class="card">
-        <div class="row">
-          <div class="col-md-6">
-            <h1>Test Completed !</h1>
-            <br />
-            <h3>Your test has been submitted Succeffuly !</h3>
-            <br />
-            <a href="#"> See your test repport!</a>
+        <div class="row justify-content-center btn-row">
+          <div class="button-container">
+            <button
+              type="button"
+              class="btn next-btn"
+              *ngIf="!isCompleted"
+              (click)="goToNextQuestion()"
+            >
+              <i
+                class="fa fa-chevron-circle-right text-dark"
+                aria-hidden="true"
+              ></i>
+              Next Question
+            </button>
+            <button
+              type="button"
+              class="btn next-btn"
+              *ngIf="allQuestionsAnswered && !alreadySubmitted"
+              (click)="testSubmit(); endTest()"
+            >
+              <i
+                class="fa fa-chevron-circle-right text-dark"
+                aria-hidden="true"
+              ></i>
+              Submit Test
+            </button>
           </div>
-          <div class="col-md-6"></div>
         </div>
       </div>
     </div>
   </ng-container>
 </ng-container>
-
-<ng-container *ngIf="alreadySubmitted">
+<ng-container *ngIf="ended">
+  <div class="container">
+    <div class="card">
+      <div class="row">
+        <div class="col-md-6">
+          <h1>Test Completed!</h1>
+          <br />
+          <h3>Your test has been submitted successfully!</h3>
+          <br />
+          <button type="button" class="add-bouton" (click)="generateReport()">
+            See your test report!
+          </button>
+          <div *ngIf="successMessage" class="success-message">
+            {{ successMessage }}
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</ng-container>
+<!-- Affichage du test déjà soumis -->
+<!-- <ng-container *ngIf="alreadySubmitted && !ended">
   <div class="container container-submitted">
     <div class="card">
       <div class="card-header">
@@ -179,33 +211,31 @@
       <div class="card-body text-center">
         <div class="row">
           <div class="col-md-12">
-            <span class="text-left">
-              <i class="fa-solid fa-circle-exclamation"></i>
-              This Test Is Already Submitted !
-            </span>
+            <span class="text-left"
+              ><i class="fa-solid fa-circle-exclamation"></i> This Test Is
+              Already Submitted !</span
+            >
           </div>
         </div>
         <div class="row">
           <div class="col-md-12">
-            <span class="text-right">
-              You can't submitted the same Test more than one time !
-            </span>
+            <span class="text-right"
+              >Si vous n’avez pas soumis votre test, veuillez vérifier le lien
+              dans votre Email.</span
+            >
           </div>
         </div>
         <div class="row">
           <div class="col-md-12">
-            <span class="warning">
-              If you didn't submitted your test , Please verify the link in your
-              Email.
-            </span>
+            <span class="warning"> </span>
           </div>
         </div>
         <div class="row">
           <div class="col-md-12">
-            <div class="btn home-btn" routerLink="/auth/home">Home Page</div>
+            <div class="btn home-btn" routerLink="/login">Home Page</div>
           </div>
         </div>
       </div>
     </div>
   </div>
-</ng-container>
+</ng-container> -->

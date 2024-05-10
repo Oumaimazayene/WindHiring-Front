@@ -1,6 +1,6 @@
 import { Component, OnInit, Inject } from "@angular/core";
 import { questionTech } from "src/app/Models/questionTech";
-import { MAT_DIALOG_DATA } from "@angular/material/dialog";
+import { MAT_DIALOG_DATA, MatDialogRef } from "@angular/material/dialog";
 import { QuestionsTechService } from "../../../../service/question-tech/questions-tech.service";
 import { Answer } from "src/app/Models/Answer";
 
@@ -18,7 +18,8 @@ export class AfficheQuestionTechDialogComponent implements OnInit {
 
   constructor(
     @Inject(MAT_DIALOG_DATA) private data: any,
-    private service: QuestionsTechService
+    private service: QuestionsTechService,
+    public dialogRef: MatDialogRef<AfficheQuestionTechDialogComponent>
   ) {
     this.question = data;
   }
@@ -49,5 +50,8 @@ export class AfficheQuestionTechDialogComponent implements OnInit {
   }
   toggleAnswerList() {
     this.showAnswerList = !this.showAnswerList;
+  }
+  closeDialog(): void {
+    this.dialogRef.close();
   }
 }

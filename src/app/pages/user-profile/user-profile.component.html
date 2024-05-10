@@ -1,22 +1,25 @@
 <div
-  class="pb-8 pt-5 pt-lg-8 d-flex align-items-center"
-  *ngIf="user"
-  [ngStyle]="{
-    'background-image': 'url(http://localhost:8090/image/' + user.logo + ')'
-  }"
+  class="header pb-8 pt-5 pt-lg-8 d-flex align-items-center"
+  style="
+    min-height: 600px;
+    background-image: url(assets/img/brand/couverture.jpg);
+    background-size: cover;
+    background-position: center top;
+  "
 >
   <span class="mask opacity-8"></span>
   <div class="container-fluid align-items-center">
     <div class="row">
       <div class="col-lg-7 col-md-10">
-        <h1 class="display-2 text-white" *ngIf="user">
-          Hello {{ user?.firstname }}
+        <h1 class="display-2" *ngIf="user" style="color: #1c1c2b">
+          Hello {{ user?.firstname }}.{{ user?.lastname }}
         </h1>
-        <p class="text-white mt-0 mb-5" *ngIf="user">
-          This is your profile page. You can see the progress you've made with
-          your work and manage your projects or assigned tasks
-        </p>
-        <a href="#!" class="btn btn-info" (click)="toggleShowEdit()"
+        <h4 class="mt-0 mb-5" *ngIf="user" style="color: #1c1c2b">
+          Prêt à découvrir de nouveaux talents ? C'est ici que ça se passe !
+          Explorez, interagissez et trouvez les perles rares qui feront briller
+          votre équipe.
+        </h4>
+        <a href="#!" class="btn button-yellow" (click)="toggleShowEdit()"
           >Edit profile</a
         >
       </div>
@@ -33,7 +36,7 @@
             <div class="card-profile-image">
               <a href="javascript:void(0)">
                 <img
-                  [src]="'http://localhost:8090/image/' + user.profileImg"
+                  [src]="'http://localhost:8090/image/' + user.logo"
                   alt="Profile Image"
                   class="rounded-circle"
                 />
@@ -98,8 +101,12 @@
                 <h3 class="mb-0">My account</h3>
               </div>
               <div class="col-4 text-right">
-                <button type="submit" class="btn btn-sm btn-primary">
-                  Settings
+                <button
+                  type="submit"
+                  class="btn btn-default"
+                  style="font-weight: normal"
+                >
+                  Modifier
                 </button>
               </div>
             </div>
@@ -213,35 +220,8 @@
               </div>
               <div class="row">
                 <div class="col-md-4 mb-3">
-                  <label for="profilePicture"
-                    >Changer la photo de profil :</label
-                  >
-                  <div class="input-group">
-                    <div class="custom-file">
-                      <input
-                        type="file"
-                        id="profilePicture"
-                        class="custom-file-input"
-                        (change)="onProfileImgFileSelected($event)"
-                        accept="image/*"
-                      />
-                      <label class="custom-file-label" for="profilePicture"
-                        >Choisir un fichier</label
-                      >
-                    </div>
-                  </div>
-                  <div *ngIf="profileImage">
-                    <img
-                      [src]="profileImage"
-                      alt="Profile Picture"
-                      class="mr-2 custom-image"
-                      style="width: 100px; height: auto"
-                    />
-                  </div>
-                </div>
-                <div class="col-md-4 mb-3">
                   <label for="logoPicture"
-                    >Uploader le logo de la société :</label
+                    >Changer le logo de la société :</label
                   >
                   <div class="input-group">
                     <div class="custom-file">
@@ -252,9 +232,10 @@
                         (change)="onLogoFileSelected($event)"
                         accept="image/*"
                       />
-                      <label class="custom-file-label" for="logoPicture"
-                        >Choisir un fichier</label
-                      >
+                      <label class="custom-file-label" for="logoPicture">
+                        <!-- Icône d'image -->
+                        <i class="fas fa-image"></i> Choisir un fichier
+                      </label>
                     </div>
                   </div>
                   <div *ngIf="logoImage">

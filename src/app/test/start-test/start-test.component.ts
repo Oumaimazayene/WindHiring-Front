@@ -1,12 +1,11 @@
-import { Component, ElementRef, Input, OnInit, ViewChild } from "@angular/core";
+import { Component, OnInit, ViewChild } from "@angular/core";
 import { ActivatedRoute } from "@angular/router";
 import { Answer } from "src/app/Models/Answer";
-import { TestLogique } from "src/app/Models/TestLogique";
 import { questionLog } from "src/app/Models/questionLog";
-import { User } from "src/app/Models/user";
 import { submittedQuestionlogique } from "src/app/Models/submittedQuestionlogique";
-import { TypeService } from "src/app/service/type-service/type.service";
-import { Type } from "src/app/Models/type";
+import { TestService } from "src/app/service/test-service/test.service";
+import { CountdownEvent, CountdownComponent } from "ngx-countdown";
+
 
 @Component({
   selector: "app-start-test",
@@ -14,282 +13,271 @@ import { Type } from "src/app/Models/type";
   styleUrls: ["./start-test.component.scss"],
 })
 export class StartTestComponent implements OnInit {
-  tick = 1000;
-  public editorBeautify: any;
-  public languagesArray: any;
-  public activatedTheme: string;
-  public questionlength: any;
-  public submittedQuestion: submittedQuestionlogique = {};
+  @ViewChild("countdown", {
+    static: false,
+  })
+  countdown: CountdownComponent;
 
+  tick = 1000;
   public id: any;
   public counter: any;
   public questionList: questionLog[] = [];
-  public currentQuestion: number = 0;
   public color: string = "black";
   public htmlContent: String = "";
   public questionType: any;
-  public questionNumber: number = 0;
   public isCompleted: boolean = false;
-  public repportQsFrm: submittedQuestionlogique = {};
-  public cantReachServer = false;
-  public submittedTest: TestLogique = {};
-  public correctAnswers: any = [];
-  public testSectionLog: TestLogique = {};
-  public candidat: any;
-  public event: any;
-  public test: Answer[] = [];
-  public qs: questionLog = {};
   public submittedQuestions: submittedQuestionlogique[] = [];
-
-  public correct: boolean = false;
-  public language: any;
-  public i: number = 0;
-  ended: boolean = false;
-  public output$: any;
-  public testTechnique: TestLogique = {};
-  public createdby: User;
+  public currentQuestionIndex: number = 0;
+  public currentQuestion: any | undefined;
+  public submittedQuestion: submittedQuestionlogique;
+  public correctAnswers: any = [];
   public alreadySubmitted: boolean = false;
+  public ended: boolean = false;
+  public showAnswerSection: boolean = false;
+  public allQuestionsAnswered: boolean = false;
+  public successMessage: string = "";
+
   constructor(
     private route: ActivatedRoute,
-    private typeService: TypeService
+    private testService: TestService
   ) {}
 
-  ngAfterViewInit() {}
   ngOnInit(): void {
-    this.currentQuestion = 0;
     this.id = this.route.snapshot.paramMap.get("id");
-    //  this.startTestSectionLog(this.id);
+    console.log("testId récupéré depuis l'URL :", this.id);
     this.color = "black";
+    this.testService.getTestById(this.id).subscribe(
+      (response) => {
+        this.questionList = response.questions;
+        if (this.questionList.length > 0) {
+          this.currentQuestion = this.questionList[this.currentQuestionIndex];
+          this.counter = this.currentQuestion.time;
+          this.questionType = this.currentQuestion.type.name;
+          console.log("currentQuestion:", this.currentQuestion);
+          console.log("questionType:", this.questionType);
+        }
+      },
+      (error) => {
+        console.error("Erreur lors de la récupération des questions:", error);
+      }
+    );
   }
-
-  // onTimerFinished(e: CountdownEvent) {
-  //   if (e.action == "done") {
-  //     this.counter = this.questionList[this.currentQuestion].time;
-  //   } else if (e.action == "notify") {
-  //     this.color = "red";
-  //     console.log(e.action);
-  //   }
-  //   if (e.left === 0) {
-  //     console.log(e.action);
-  //     //this.submittedQuestion();
-
-  //     this.color = "black";
-
-  //     console.log(this.isCompleted);
-  //     this.counter = this.questionList[this.currentQuestion].time;
-
-  //     const typeId = this.questionList[this.currentQuestion].type_id;
-  //     if (typeId) {
-  //       this.typeService.getTypeById(typeId).subscribe((type: Type) => {
-  //         this.questionType = type.name || "";
-  //       });
-  //     } else {
-  //       this.questionType = "";
-  //       this.submittedQuestions.push(this.questionList[this.currentQuestion]);
-  //       this.htmlContent =
-  //         this.questionList[this.currentQuestion].questionBody || "";
-  //     }
-  //   }
-  // }
-
-  nextQuestion() {
-    this.verifyEnd();
-
-    if (!this.submittedQuestion.candidateAnswer) {
-      this.submittedQuestion.candidateAnswer = [
-        { answer: "", isTrue: false, id: 0 },
-      ];
-      this.submittedQuestion.question = this.qs;
-      this.repportQsFrm.question = this.submittedQuestion.question;
-      this.repportQsFrm.candidateAnswer =
-        this.submittedQuestion.candidateAnswer;
-      this.repportQsFrm.isCorrect = false;
-      this.repportQsFrm.qsScore = 0;
-    }
-
-    this.output$ = "";
-    this.i = 0;
-    this.submittedQuestion.candidateAnswer = [];
-    this.qs = this.questionList[this.currentQuestion];
-    this.counter = this.qs.time;
-    this.correctAnswers = [];
-
-    this.submittedQuestions.push(this.qs);
-
-    const typeId = this.qs.type_id;
-    if (typeId) {
-      this.typeService.getTypeById(typeId).subscribe((type: Type) => {
-        this.questionType = type.name || "";
-      });
-    } else {
-      this.questionType = "";
-    }
-
-    this.submittedQuestion = {};
-    this.htmlContent = this.qs.questionBody || "";
-  }
-
-  verifyEnd() {
-    console.log(this.currentQuestion + 1, this.questionlength);
-    if (this.currentQuestion === this.questionlength - 1) {
-      this.isCompleted = true;
-    } else {
-      this.isCompleted = false;
-      this.currentQuestion++;
-    }
-  }
-  // startTestSectionLog(id: any) {
-  //   console.log(this.currentQuestion);
-  //   this.submittedQuestions = [];
-  //   //this.submittedQuestion.candidateAnswer=[{answer:"",isTrue:false,id:""}]
-  //   this.service.startTest(id).subscribe(
-  //     (res) => {
-  //       this.createdby = res.createdBy;
-  //       this.questionList = res.campagne.questionList;
-  //       this.questionlength = this.questionList.length;
-  //       this.test = [];
-  //       //this.verifyEnd()
-  //       this.qs = this.questionList[this.currentQuestion];
-  //       this.submittedQuestions.push(this.qs);
-  //       this.submittedQuestion.question = this.qs;
-  //       this.language = res.campagne.domains;
-  //       this.htmlContent = res.campagne.questionList[0].questionBody;
-  //       this.counter = this.questionList[0].time;
-  //       this.questionType =
-  //         this.questionList[this.currentQuestion].qstType?.name;
-  //       this.questionNumber = this.questionList.length;
-  //       this.candidat = res.candidate;
-  //     },
-  //     (err) => {
-  //       this.alreadySubmitted = true;
-  //     }
-  //   );
-  // }
 
   endTest() {
-    this.ended = true;
+    const candidateReponseDtos = this.submittedQuestions;
+
+    this.testService
+      .generateTestReport(this.id, candidateReponseDtos)
+      .subscribe(
+        (response) => {
+          console.log("Rapport généré avec succès :", response);
+          this.alreadySubmitted = true;
+          this.ended = true;
+        },
+        (error) => {
+          console.error("Erreur lors de la génération du rapport :", error);
+        }
+      );
+
+    this.isCompleted = true;
+  }
+  goToNextQuestion(): void {
+    if (this.currentQuestionIndex < this.questionList.length - 1) {
+      const submittedQuestionIndex = this.submittedQuestions.findIndex(
+        (sq) => sq.idQuestion === this.currentQuestion.id
+      );
+
+      if (submittedQuestionIndex === -1) {
+        const submittedQuestion: submittedQuestionlogique = {
+          idQuestion: this.currentQuestion.id,
+          reponses: [],
+        };
+        this.submittedQuestions.push(submittedQuestion);
+      }
+
+      // Passer à la question suivante
+      this.currentQuestionIndex++;
+      this.currentQuestion = this.questionList[this.currentQuestionIndex];
+      this.counter = this.currentQuestion.time;
+      this.showAnswerSection = false;
+    } else {
+      this.allQuestionsAnswered = true;
+    }
   }
 
-  // submitQuestion() {
-  //   this.submittedTest.createdBy = this.createdby;
-  //   this.submittedTest.date = new Date();
-  //   this.submittedTest.candidate = this.candidat;
-  //   this.submittedTest.domains = this.language;
-  //   this.submittedTest.questions.push(this.repportQsFrm);
-  //   console.log("test", this.submittedTest);
-  //   this.nextQuestion();
-  //   if (this.isCompleted == false) {
-  //     //  this.currentQuestion++;
-  //     console.log("next...");
-  //     this.ended = false;
-  //   } else if (this.isCompleted == true) {
-  //     this.ended = true;
-  //     this.postTest();
-  //   }
-  // }
+  onTimerFinished(e: CountdownEvent) {
+    if (e.action === "done") {
+      console.log("Temps écoulé. Passage à la question suivante...");
+      this.checkAndSubmitAnswer();
+    } else if (e.action === "notify") {
+      this.color = e.left <= 10000 ? "red" : "inherit";
+    }
 
-  // postTest(){
-  //   console.log(this.currentQuestion+1 , this.questionlength)
-  //   console.log("sending data...")
-  //   this.service.submitTest(this.submittedTest).subscribe(res=>{
-  //   })
-  // }
+    if (e.left === 0) {
+      console.log("Temps écoulé. Passage à la question suivante...");
+      this.checkAndSubmitAnswer();
+      this.color = "black";
+      this.counter = this.questionList[this.currentQuestionIndex].time;
+    }
+  }
 
-  /* answer QCM question */
-  // checkCheckBoxvalue(event:any,x:Answer,index:any){
-  //   var eventClick:any;
-  //   eventClick=event.target.checked
-  //   if(this.i == 0){
-  //     this.submittedQuestion.candidateAnswer=[]
-  //     var answers=this.qs.answerList || []
-  //     for(let a of answers){
-  //       if(a.isTrue===true){
-  //         this.correctAnswers.push(a)
-  //       }
-  //     }
-  //     this.submittedQuestion.question=this.qs
-  //   }
-  //   if(eventClick==true){
-  //     this.i++;
-  //     this.submittedQuestion.candidateAnswer?.push(x)
-  //     if(JSON.stringify(this.submittedQuestion.candidateAnswer) === JSON.stringify(this.correctAnswers)){
-  //       this.correct=true
-  //     }
-  //     else{
-  //       this.correct=false
-  //     }
-  //   }
-  //   else if (eventClick == false){
-  //     this.submittedQuestion.candidateAnswer?.forEach((element:any,index:any)=>{
-  //       if(JSON.stringify(element) ===JSON.stringify(x)){
-  //          if(this.submittedQuestion.candidateAnswer){
-  //         this.submittedQuestion.candidateAnswer.splice(index,1);
-  //        }
-  //       }
-  //       if(JSON.stringify(this.submittedQuestion.candidateAnswer) === JSON.stringify(this.correctAnswers)){
-  //         this.correct=true
-  //       }
-  //       else{
-  //         this.correct=false
-  //       }
-  //     })
+  checkAndSubmitAnswer() {
+    if (
+      this.submittedQuestion &&
+      this.submittedQuestion.reponses.length === 0
+    ) {
+      this.submittedQuestion = {
+        idQuestion: this.currentQuestion.id,
+        reponses: null,
+      };
+      if (
+        !this.submittedQuestions.some(
+          (sq) => sq.idQuestion === this.currentQuestion.id
+        )
+      ) {
+        this.submittedQuestions.push(this.submittedQuestion);
+      }
+    }
+    this.goToNextQuestion();
+  }
 
-  //   }
+  submitQuestion(questionId: any, answer: string) {
+    const submittedQuestion: submittedQuestionlogique = {
+      idQuestion: questionId,
+      reponses: answer ? [answer] : [],
+    };
 
-  //   if(this.correct){
-  //     this.submittedQuestion.qsScore=this.qs.score
-  //   }
-  //   else{
-  //     this.submittedQuestion.qsScore=0
-  //   }
-  //   this.repportQsFrm.question=this.submittedQuestion.question
-  //   this.repportQsFrm.candidateAnswer =this.submittedQuestion.candidateAnswer
-  //   this.repportQsFrm.isCorrect=this.correct
-  //   this.repportQsFrm.qsScore=this.submittedQuestion.qsScore
-  //   console.log("qcm : ",this.repportQsFrm)
+    const existingIndex = this.submittedQuestions.findIndex(
+      (sq) => sq.idQuestion === questionId
+    );
 
-  // }
+    if (existingIndex !== -1) {
+      this.submittedQuestions[existingIndex] = submittedQuestion;
+    } else {
+      this.submittedQuestions.push(submittedQuestion);
+    }
 
-  // questionExists(id:any) {
-  //   return this.submittedQuestions.some(function(el) {
-  //     return el.id === id;
-  //   });
-  // }
-  //  textSubmit(){
-  //   if(this.qs.answerList){
-  //     // get correct answer
-  //     this.correctAnswers = this.qs.answerList[0]
-  //     /* candidates answer */
-  //     const answer ={
-  //       id:this.qs.answerList[0].id,
-  //       answer:this.textAnswer.answer,
-  //       isTrue:true
-  //     }
-  //     const answerss=[]
-  //     answerss.push(answer)
-  //     //console.log("text test",this.test)
-  //     this.submittedQuestion.question=this.qs
-  //     this.submittedQuestion.candidateAnswer=answerss
-  //     this.submittedQuestions.push(this.submittedQuestion)
-  //     console.log("cand answ", this.submittedQuestion.candidateAnswer)
-  //         if(JSON.stringify(answer).toLocaleLowerCase() === JSON.stringify(this.correctAnswers).toLocaleLowerCase()){
-  //         this.correct=true
-  //       }
-  //         else{
-  //           this.correct=false
-  //         }
-  //           if(this.correct==true){
-  //                 this.submittedQuestion.qsScore=this.qs.score
-  //             }
-  //             else{
-  //               this.submittedQuestion.qsScore=0
-  //             }
-  //   }
-  //             this.repportQsFrm.question=this.submittedQuestion.question
-  //             this.repportQsFrm.candidateAnswer=this.submittedQuestion.candidateAnswer
-  //             this.repportQsFrm.isCorrect=this.correct
-  //             this.repportQsFrm.qsScore=this.submittedQuestion.qsScore
-  //             console.log("testtttttt : ",this.submittedTest)
-  //             //this.textAnswer.answer=""
-  // }
+    console.log("submittedQuestions :", this.submittedQuestions);
+  }
+
+  checkCheckBoxvalue(event: any, x: Answer, index: any) {
+    const eventClick = event.target.checked;
+    if (this.questionType === "qcu") {
+      if (eventClick) {
+        const submittedQuestion: submittedQuestionlogique = {
+          idQuestion: this.currentQuestion.id,
+          reponses: [x.answer],
+        };
+
+        const indexToRemove = this.submittedQuestions.findIndex(
+          (sq) => sq.idQuestion === this.currentQuestion.id
+        );
+        if (indexToRemove !== -1) {
+          this.submittedQuestions.splice(indexToRemove, 1);
+        }
+        this.submittedQuestions.push(submittedQuestion);
+      } else {
+        const indexToRemove = this.submittedQuestions.findIndex(
+          (sq) => sq.idQuestion === this.currentQuestion.id
+        );
+        if (indexToRemove !== -1) {
+          this.submittedQuestions.splice(indexToRemove, 1);
+        }
+      }
+    } else {
+      console.error("Le type de question n'est pas pris en charge.");
+    }
+
+    console.log("submittedQuestions :", this.submittedQuestions);
+  }
+
+  checkCheckBoxvalueQCM(event: any, x: Answer, index: any) {
+    const eventClick = event.target.checked;
+
+    if (eventClick) {
+      if (
+        !this.submittedQuestions.some(
+          (sq) => sq.idQuestion === this.currentQuestion.id
+        )
+      ) {
+        this.submittedQuestions.push({
+          idQuestion: this.currentQuestion.id,
+          reponses: [x.answer],
+        });
+      }
+    } else {
+      const indexToRemove = this.submittedQuestions.findIndex(
+        (sq) => sq.idQuestion === this.currentQuestion.id
+      );
+      if (indexToRemove !== -1) {
+        this.submittedQuestions.splice(indexToRemove, 1);
+      }
+    }
+
+    console.log("submittedQuestions :", this.submittedQuestions);
+  }
+  testSubmit() {
+    const existingIndex = this.submittedQuestions.findIndex(
+      (question) => question.idQuestion === this.currentQuestion.id
+    );
+
+    if (existingIndex !== -1) {
+      if (
+        this.submittedQuestion &&
+        Array.isArray(this.submittedQuestion.reponses) &&
+        this.submittedQuestion.reponses.length > 0
+      ) {
+        this.submittedQuestions[existingIndex].reponses =
+          this.submittedQuestion.reponses;
+      }
+    } else {
+      const submittedQuestion: submittedQuestionlogique = {
+        idQuestion: this.currentQuestion.id,
+        reponses: this.submittedQuestion.reponses
+          ? this.submittedQuestion.reponses
+          : [],
+      };
+      this.submittedQuestions.push(submittedQuestion);
+    }
+
+    this.submittedQuestion = {
+      idQuestion: 0,
+      reponses: [],
+    };
+
+    console.log("submittedQuestions :", this.submittedQuestions);
+
+    if (this.isLastQuestion()) {
+      this.endTest();
+    } else {
+      this.goToNextQuestion();
+    }
+  }
+  generateReport() {
+    this.testService
+      .generateFreemarkerTestReport(this.id, this.submittedQuestions)
+      .subscribe(
+        (response) => {
+          try {
+            const contentType = response.headers
+              .get("content-type")
+              ?.toLowerCase();
+            if (contentType && contentType.includes("application/json")) {
+              const jsonResponse = JSON.parse(response.text());
+            } else {
+              console.log(response.text());
+            }
+          } catch (error) {
+            console.error("Erreur lors de la génération du rapport :", error);
+          }
+        },
+        (error) => {
+          console.error("Erreur lors de la génération du rapport :", error);
+        }
+      );
+  }
+
+  isLastQuestion(): boolean {
+    return this.currentQuestionIndex === this.questionList.length - 1;
+  }
 }

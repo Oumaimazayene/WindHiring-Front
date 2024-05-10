@@ -6,6 +6,7 @@ import { QuestionLogicService } from "src/app/service/question-logique/questions
 import { ViewQuestionLogDialogComponent } from "src/app/pages/Question/questions-log/view-question-log-dialog/view-question-log-dialog.component";
 import { MatDialog } from "@angular/material/dialog";
 import { AddQuestionPriveeLogDialogComponent } from "../add-question-privee-log-dialog/add-question-privee-log-dialog.component";
+import { AddQuestionLogDialogComponent } from "../../../Question/questions-log/add-question-log-dialog/add-question-log-dialog.component";
 
 @Component({
   selector: "app-questionprive-log",
@@ -44,6 +45,11 @@ export class QuestionpriveLogComponent implements OnInit {
       (question) => {
         const dialogRef = this.dialog.open(ViewQuestionLogDialogComponent, {
           data: question,
+          maxHeight: "80vh",
+          maxWidth: "80vw",
+          height: "80%",
+          width: "80%",
+          panelClass: "centered-dialog",
         });
 
         dialogRef.afterClosed().subscribe(() => {});
@@ -71,6 +77,7 @@ export class QuestionpriveLogComponent implements OnInit {
               formData.imageFile,
               questionLogicDtoJson
             );
+            this.getPrivateQuestions(this.testSectionId);
           } else {
             console.error("ID de la section de test non trouvé dans l'URL.");
           }

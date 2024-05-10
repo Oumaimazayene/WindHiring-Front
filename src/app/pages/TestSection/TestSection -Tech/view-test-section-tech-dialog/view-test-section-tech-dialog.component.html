@@ -1,4 +1,7 @@
 <div class="container scrollable-dialog-content" *ngIf="testSectionDetails">
+  <div class="d-flex justify-content-end mb-3" (click)="closeDialog()">
+    <i class="fas fa-times" style="font-size: 18px"></i>
+  </div>
   <div class="card card-main">
     <div class="card-header">
       <span>
@@ -129,21 +132,6 @@
           </div>
         </div>
       </div>
-      <br /><br />
-
-      <div class="row justify-content-center">
-        <div
-          type="button"
-          class="btn btn-show text-center"
-          mat-button
-          [mat-dialog-close]="false"
-        >
-          <button type="button" class="btn btn-default" (click)="close()">
-            retourner
-          </button>
-        </div>
-      </div>
-
       <br /><br />
     </div>
   </div>

@@ -2,10 +2,11 @@ import { Component, OnInit } from "@angular/core";
 import { QuestionsTechService } from "../../../service/question-tech/questions-tech.service";
 import { questionTech } from "../../../Models/questionTech";
 import { MatDialog, MatDialogConfig } from "@angular/material/dialog";
-import { NgForm } from "@angular/forms";
 import { AddQuestionTechDialogComponent } from "./add-question-tech-dialog/add-question-tech-dialog.component";
 import { DeleteQuestionTechDialogComponent } from "./delete-question-tech-dialog/delete-question-tech-dialog.component";
 import { AfficheQuestionTechDialogComponent } from "./affiche-question-tech-dialog/affiche-question-tech-dialog.component";
+import { DomainsService } from "../../../service/domain-service/domains.service";
+import { Domaine } from "src/app/Models/domaine";
 
 @Component({
   selector: "app-questions-tech",
@@ -19,14 +20,25 @@ export class QuestionsTechComponent implements OnInit {
   currentPage: number = 1;
   pageSize: number = 5;
   totalItems: number = 0;
+  filterDifficulty: string | null;
+  fiterDomain: string | null;
+  filterType: string | null;
+  domaines: string[];
+  technicalQuestionsCount: number;
+  difficulties: string[] = ["EASY", "MEDIUM", "HARD"];
+  domainsCount: number;
 
   constructor(
     private questionsTechService: QuestionsTechService,
+    private DomainsService: DomainsService,
     private dialog: MatDialog
   ) {}
 
   ngOnInit(): void {
     this.getAllQuestionsTech();
+    this.loadDomaines();
+    this.getTechnicalQuestionsCount();
+    this.getNombreDomaines();
   }
 
   getAllQuestionsTech(): void {
@@ -108,6 +120,11 @@ export class QuestionsTechComponent implements OnInit {
       (question: questionTech[]) => {
         const dialogRef = this.dialog.open(AfficheQuestionTechDialogComponent, {
           data: question,
+          maxHeight: "80vh",
+          maxWidth: "80vw",
+          height: "80%",
+          width: "80%",
+          panelClass: "centered-dialog",
         });
         console.log("question", question);
 
@@ -116,6 +133,66 @@ export class QuestionsTechComponent implements OnInit {
       (error) => {
         console.error(
           "Erreur lors de la récupération des détails de la question : ",
+          error
+        );
+      }
+    );
+  }
+
+  filterQuestion(): void {
+    this.questionsTechService
+      .filterTechnicalQuestionsByTypeAndDifficultyAndDomainName(
+        this.filterType,
+        this.filterDifficulty,
+        this.fiterDomain
+      )
+      .subscribe(
+        (data: questionTech[]) => {
+          this.questionsTech = data;
+          this.totalItems = this.questionsTech.length;
+          this.setPage(1);
+        },
+        (error) => {
+          console.error(
+            "Une erreur est survenue lors de la récupération des questions techniques filtrées : ",
+            error
+          );
+        }
+      );
+  }
+
+  loadDomaines(): void {
+    this.DomainsService.getAllDomaines().subscribe(
+      (domaines: Domaine[]) => {
+        this.domaines = domaines.map((domaine) => domaine.name);
+        console.log("domaines", domaines);
+      },
+      (error) => {
+        console.error("Erreur lors du chargement des domaines :", error);
+      }
+    );
+  }
+  getTechnicalQuestionsCount(): void {
+    this.questionsTechService.countTechnicalQuestions().subscribe(
+      (count) => {
+        this.technicalQuestionsCount = count;
+      },
+      (error) => {
+        console.error(
+          "Erreur lors de la récupération du nombre de questions techniques :",
+          error
+        );
+      }
+    );
+  }
+  getNombreDomaines(): void {
+    this.DomainsService.countDomains().subscribe(
+      (count) => {
+        this.domainsCount = count;
+      },
+      (error) => {
+        console.error(
+          "Erreur lors de la récupération du nombre de domaines :",
           error
         );
       }

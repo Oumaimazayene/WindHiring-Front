@@ -63,17 +63,15 @@
 }
 /* Ajoutez ces styles pour rendre le contenu du MatDialog scrollable */
 .scrollable-dialog-content {
-  max-height: 300px; /* Définissez la hauteur maximale du contenu */
-  overflow-y: auto; /* Activez le défilement vertical lorsque le contenu dépasse la hauteur maximale */
+  max-height: 500px;
+  overflow-y: auto;
 }
-/* Styles pour personnaliser la largeur du textarea */
 .custom-width {
   width: 100%; /* Largeur maximale */
   max-width: 800px; /* Largeur maximale */
 }
 
-/* Styles pour personnaliser la largeur de l'image */
 .custom-image {
-  width: 100%; /* Largeur maximale */
-  max-width: 500px; /* Largeur maximale */
+  width: 70%; /* Largeur maximale */
+  max-width: 200px; /* Largeur maximale */
 }

@@ -31,6 +31,18 @@
                   formControlName="firstname"
                 />
               </div>
+              <div
+                *ngIf="
+                  registerForm.get('firstname').invalid &&
+                  (registerForm.get('firstname').dirty ||
+                    registerForm.get('firstname').touched)
+                "
+                class="text-danger"
+              >
+                <div *ngIf="registerForm.get('firstname').errors.required">
+                  Le prénom est requis.
+                </div>
+              </div>
             </div>
             <div class="form-group">
               <div class="input-group input-group-alternative mb-3">
@@ -45,6 +57,18 @@
                   type="text"
                   formControlName="lastname"
                 />
+              </div>
+              <div
+                *ngIf="
+                  registerForm.get('lastname').invalid &&
+                  (registerForm.get('lastname').dirty ||
+                    registerForm.get('lastname').touched)
+                "
+                class="text-danger"
+              >
+                <div *ngIf="registerForm.get('lastname').errors.required">
+                  Le nom de famille est requis.
+                </div>
               </div>
             </div>
             <div class="form-group">
@@ -61,6 +85,18 @@
                   formControlName="numtel"
                 />
               </div>
+              <div
+                *ngIf="
+                  registerForm.get('numtel').invalid &&
+                  (registerForm.get('numtel').dirty ||
+                    registerForm.get('numtel').touched)
+                "
+                class="text-danger"
+              >
+                <div *ngIf="registerForm.get('numtel').errors.required">
+                  Le numéro de téléphone est requis.
+                </div>
+              </div>
             </div>
             <div class="form-group">
               <div class="input-group input-group-alternative mb-3">
@@ -75,6 +111,18 @@
                   type="text"
                   formControlName="societyName"
                 />
+              </div>
+              <div
+                *ngIf="
+                  registerForm.get('societyName').invalid &&
+                  (registerForm.get('societyName').dirty ||
+                    registerForm.get('societyName').touched)
+                "
+                class="text-danger"
+              >
+                <div *ngIf="registerForm.get('societyName').errors.required">
+                  Le nom de la société est requis.
+                </div>
               </div>
             </div>
             <div class="form-group">
@@ -91,8 +139,21 @@
                   formControlName="matricule_fiscale"
                 />
               </div>
+              <div
+                *ngIf="
+                  registerForm.get('matricule_fiscale').invalid &&
+                  (registerForm.get('matricule_fiscale').dirty ||
+                    registerForm.get('matricule_fiscale').touched)
+                "
+                class="text-danger"
+              >
+                <div
+                  *ngIf="registerForm.get('matricule_fiscale').errors.required"
+                >
+                  Le matricule fiscale est requis.
+                </div>
+              </div>
             </div>
-            <!-- Autres champs du formulaire -->
             <div class="form-group">
               <div class="input-group input-group-alternative mb-3">
                 <div class="input-group-prepend">
@@ -107,30 +168,28 @@
                   formControlName="email"
                 />
               </div>
-            </div>
-
-            <div class="row my-4">
-              <div class="col-12">
-                <div
-                  class="custom-control custom-control-alternative custom-checkbox"
-                >
-                  <input
-                    class="custom-control-input"
-                    id="customCheckRegister"
-                    type="checkbox"
-                  />
-                  <label class="custom-control-label" for="customCheckRegister">
-                    <span class="text-muted"
-                      >I agree with the <a href="#!">Privacy Policy</a></span
-                    >
-                  </label>
+              <div
+                *ngIf="
+                  registerForm.get('email').invalid &&
+                  (registerForm.get('email').dirty ||
+                    registerForm.get('email').touched)
+                "
+                class="text-danger"
+              >
+                <div *ngIf="registerForm.get('email').errors.required">
+                  L'email est requis.
+                </div>
+                <div *ngIf="registerForm.get('email').errors.email">
+                  L'email doit être valide.
                 </div>
               </div>
             </div>
+
             <div class="text-center mt-3">
               <button
-                type="submit"
                 class="md:w-full rounded-full button-yellow col-lg-10"
+                type="submit"
+                [disabled]="registerForm.invalid || registerForm.pristine"
               >
                 <span>S'inscrire</span>
               </button>

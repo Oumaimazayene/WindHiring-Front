@@ -98,12 +98,16 @@
   .navbar-nav .nav-link {
     display: flex;
     align-items: center;
-    color: white; // Couleur de texte par défaut
+    color: white; /* Couleur de texte par défaut */
 
     &:hover,
     &:active {
-      color: #eab308; // Couleur de texte jaune lorsqu'il est survolé ou cliqué
-      cursor: pointer; // Curseur de type pointer lorsqu'il est survolé
+      color: #eab308; /* Couleur de texte jaune lorsqu'il est survolé ou cliqué */
+      cursor: pointer; /* Curseur de type pointer lorsqu'il est survolé */
+    }
+
+    &.active {
+      color: #eab308; /* Couleur de texte jaune pour le lien actif */
     }
   }
 

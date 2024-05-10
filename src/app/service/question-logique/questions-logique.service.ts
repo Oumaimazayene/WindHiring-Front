@@ -82,4 +82,8 @@ export class QuestionLogicService {
       params,
     });
   }
+
+  countLogiqueQuestions(): Observable<number> {
+    return this.http.get<number>(`${this.baseUrl}/logique/count`);
+  }
 }

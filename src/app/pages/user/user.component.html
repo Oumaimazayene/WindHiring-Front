@@ -133,8 +133,7 @@
                 <th scope="col">Prénom D'utilisateur</th>
                 <th scope="col">Email</th>
                 <th scope="col">Nom Du Société</th>
-                <th>Etat De Compte</th>
-                <th>accés</th>
+                <th>Validation Des Comptes</th>
               </tr>
             </thead>
             <tbody>
@@ -143,23 +142,28 @@
                 <td>{{ user.lastname }}</td>
                 <td>{{ user.email }}</td>
                 <td>{{ user.societyName }}</td>
-                <td>
-                  <ng-container *ngIf="user.verified; else notVerified">
-                    <i class="ni ni-check-bold verified-icon"></i>
-                  </ng-container>
-                  <ng-template #notVerified>
-                    <label class="custom-toggle">
-                      <input type="checkbox" (change)="validateUser(user.id)" />
-                      <span class="custom-toggle-slider rounded-circle"></span>
-                    </label>
-                  </ng-template>
-                </td>
-
-                <td>
-                  <label class="custom-toggle">
-                    <input type="checkbox" />
-                    <span class="custom-toggle-slider rounded-circle"></span>
-                  </label>
+                <td class="align-middle text-center">
+                  <div class="custom-control custom-switch">
+                    <input
+                      *ngIf="user.verified; else notVerified"
+                      type="checkbox"
+                      class="custom-control-input"
+                      id="toggleSwitch{{ user.id }}"
+                      checked
+                      (change)="validateUser(user.id)"
+                    />
+                    <input
+                      *ngIf="!user.verified"
+                      type="checkbox"
+                      class="custom-control-input"
+                      id="toggleSwitch{{ user.id }}"
+                      (change)="validateUser(user.id)"
+                    />
+                    <label
+                      class="custom-control-label"
+                      for="toggleSwitch{{ user.id }}"
+                    ></label>
+                  </div>
                 </td>
               </tr>
             </tbody>
@@ -179,8 +183,8 @@
               </li>
               <li class="page-item">
                 <a class="page-link" href="javascript:void(0)"
-                  >2 <span class="sr-only">(current)</span></a
-                >
+                  >2 <span class="sr-only"></span
+                ></a>
               </li>
               <li class="page-item">
                 <a class="page-link" href="javascript:void(0)">3</a>

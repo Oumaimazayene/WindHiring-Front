@@ -44,6 +44,11 @@ export class QuestionTechPriveComponent implements OnInit {
       (question) => {
         const dialogRef = this.dialog.open(AfficheQuestionTechDialogComponent, {
           data: question,
+          maxHeight: "80vh",
+          maxWidth: "80vw",
+          height: "80%",
+          width: "80%",
+          panelClass: "centered-dialog",
         });
 
         dialogRef.afterClosed().subscribe(() => {});

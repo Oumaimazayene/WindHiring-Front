@@ -65,10 +65,23 @@ export class AuthService {
   }
 
   private isTokenExpired(token: string): boolean {
-    // Implémentez la logique pour vérifier si le token est expiré
-    return false; // Placeholder pour la démo
+    return false;
   }
-
+  resetPassword(email: string, newPassword: string): Observable<void> {
+    return this.http
+      .put<void>(`${this.apiUrl}/reset-password`, null, {
+        params: {
+          email: email,
+          newPassword: newPassword,
+        },
+      })
+      .pipe(
+        tap(() => {
+          console.log("Mot de passe réinitialisé avec succès");
+        }),
+        catchError(this.handleError)
+      );
+  }
   private handleError(error: any): Observable<never> {
     console.error("Erreur de requête :", error);
     return throwError("Une erreur est survenue, veuillez réessayer plus tard.");

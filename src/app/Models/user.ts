@@ -12,7 +12,6 @@ export class User {
   societyName?: string;
   Signature?: string;
   logo?: string;
-  profileImg?: string;
   uuid?: string;
   matricule_fiscale?: string;
   role?: role;

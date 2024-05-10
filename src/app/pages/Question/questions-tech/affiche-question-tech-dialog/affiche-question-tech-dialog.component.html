@@ -1,4 +1,7 @@
-<div class="container scrollable-dialog-content" *ngIf="question">
+<div class="container" *ngIf="question">
+  <div class="d-flex justify-content-end mb-3" (click)="closeDialog()">
+    <i class="fas fa-times" style="font-size: 18px"></i>
+  </div>
   <div class="card card-main">
     <div class="card-header">
       <span>
@@ -86,7 +89,7 @@
       <br /><br />
       <div class="row">
         <div class="col-md-12">
-          <label for="" class="form-label">Question Type</label>
+          <label for="" class="form-label">Question:</label>
           <div [innerHTML]="codeBlock"></div>
         </div>
       </div>

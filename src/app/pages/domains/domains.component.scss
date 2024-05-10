@@ -14,7 +14,6 @@
   color: #fff; // Couleur du texte pour la notification d'erreur
 }
 
-// Personnalisation de l'apparence de la popup
 .simple-notification {
   border-radius: 5px; // Bord arrondi de la notification
   font-family: Arial, sans-serif; // Police de caractères
@@ -29,9 +28,9 @@
   border-radius: 8px;
   cursor: pointer;
   font-size: 16px;
-  font-weight: bold;
+  font-weight: normal;
 
-  background-color: #efcc0b; /* Fallback pour les navigateurs ne prenant pas en charge les dégradés */
+  background-color: #efcc0b; 
 }
 .add-bouton:hover {
   border-color: white;

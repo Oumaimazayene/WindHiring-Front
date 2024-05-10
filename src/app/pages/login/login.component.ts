@@ -28,6 +28,9 @@ export class LoginComponent implements OnInit {
       password: ["", [Validators.required, Validators.minLength(6)]],
     });
   }
+  isFormValid(): boolean {
+    return this.form.valid;
+  }
   async login() {
     if (this.form.valid) {
       try {
