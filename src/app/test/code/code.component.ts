@@ -32,21 +32,20 @@ export class CodeComponent implements OnInit, AfterViewInit {
   private configureAce(editor: any): void {
     editor.setTheme("ace/theme/monokai");
     editor.getSession().setMode("ace/mode/javascript");
-    // Add more configurations here as needed for the project
+    editor.setOptions({
+      enableBasicAutocompletion: true,
+      enableSnippets: true,
+      enableLiveAutocompletion: true,
+      enableBeautify: true,
+    });
   }
 
   runCode() {
     const editor = ace.edit(this.editorRef.nativeElement);
     const code = editor.getValue();
 
-    // Call the service to execute the code
     this.codeService
-      .runScript(
-        "python3", // Example language
-        "3", // Example version
-        code,
-        null // Example stdin
-      )
+      .runScript("python3", "3", code, null)
       .subscribe((response) => {
         this.response = response;
       });

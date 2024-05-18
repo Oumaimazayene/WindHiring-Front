@@ -2,6 +2,7 @@ import { Component, OnInit, Inject } from "@angular/core";
 import { MatDialogRef, MAT_DIALOG_DATA } from "@angular/material/dialog";
 import { CandidatServiceService } from "src/app/service/candidat-service/candidat-service.service";
 import { FormGroup, FormControl, Validators } from "@angular/forms";
+import { ToastrService } from "ngx-toastr";
 
 @Component({
   selector: "app-send-test",
@@ -23,6 +24,7 @@ export class SendTestComponent implements OnInit {
 
   constructor(
     public dialogRef: MatDialogRef<SendTestComponent>,
+    private toastr: ToastrService,
     @Inject(MAT_DIALOG_DATA) public data: any,
     private candidatService: CandidatServiceService
   ) {}
@@ -57,12 +59,13 @@ export class SendTestComponent implements OnInit {
         (response) => {
           console.log("Réponse de l'API :", response);
           console.log("E-mail envoyé avec succès !");
-          this.showAlert = true;
           this.closeDialog();
+          this.toastr.success("Test envoyé avec succés ");
         },
         (error) => {
           console.error("Erreur lors de l'envoi de l'e-mail :", error);
-          console.error("Détails de l'erreur :", error.error); // Afficher les détails de l'erreur
+          console.error("Détails de l'erreur :", error.error);
+          this.toastr.error("Erreur lors de l'envoi de l'e-mail");
         }
       );
   }

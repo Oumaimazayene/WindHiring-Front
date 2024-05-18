@@ -48,10 +48,10 @@ const routes: Routes = [
     loadChildren: () => import("./test/test.module").then((m) => m.TestModule),
   },
   {
-    path: "",
+    path: "home",
     loadChildren: () =>
-      import("./register-response/register-response.module").then(
-        (m) => m.RegisterResponseModule
+      import("./register-respence/register-respence.module").then(
+        (m) => m.RegisterRespenceModule
       ),
   },
 ];

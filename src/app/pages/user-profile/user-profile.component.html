@@ -11,7 +11,11 @@
   <div class="container-fluid align-items-center">
     <div class="row">
       <div class="col-lg-7 col-md-10">
-        <h1 class="display-2" *ngIf="user" style="color: #1c1c2b">
+        <h1
+          class="display-2"
+          *ngIf="user"
+          style="color: #1c1c2b; font-weight: bold"
+        >
           Hello {{ user?.firstname }}.{{ user?.lastname }}
         </h1>
         <h4 class="mt-0 mb-5" *ngIf="user" style="color: #1c1c2b">

@@ -1,7 +1,7 @@
-import { Component, OnInit } from "@angular/core";
+import { Component, OnInit, TemplateRef, ViewChild } from "@angular/core";
 import { MatDialogRef } from "@angular/material/dialog";
 import { Domaine } from "src/app/Models/domaine";
-import { NgForm } from "@angular/forms"; // Importez NgForm pour travailler avec les formulaires
+import { NgForm } from "@angular/forms";
 
 @Component({
   selector: "app-ajout-confirmation-dialog",
@@ -9,6 +9,7 @@ import { NgForm } from "@angular/forms"; // Importez NgForm pour travailler avec
   styleUrls: ["./ajout-confirmation-dialog.component.scss"],
 })
 export class AjoutConfirmationDialogComponent implements OnInit {
+  @ViewChild("snackBarTemplate") snackBarTemplate: TemplateRef<any>;
   newDomaine: Domaine = {
     name: "",
     version: "",
@@ -27,7 +28,6 @@ export class AjoutConfirmationDialogComponent implements OnInit {
 
   addDomaine(domainForm: NgForm): void {
     if (domainForm.valid) {
-     
       this.dialogRef.close(this.newDomaine);
     } else {
     }

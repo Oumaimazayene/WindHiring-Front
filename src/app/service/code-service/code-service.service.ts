@@ -10,17 +10,35 @@ export class CodeServiceService {
 
   constructor(private http: HttpClient) {}
 
-  // getSupportedLanguages(): Observable<any> {
-  //   return this.http.get<any>(`${this.baseUrl}langs`);
-  // }
-
   runScript(
     language: string,
     version: string,
     script: string,
     stdin: string
   ): Observable<any> {
+    console.log("Sending request with language:", language);
+    console.log("Sending request with version:", version);
+    console.log("Sending request with script:", script);
+    console.log("Sending request with stdin:", stdin);
+
     const body = { language, version, script, stdin };
-    return this.http.post<any>(`${this.baseUrl}/run`, body);
+
+    console.log("Sending request body:", body);
+
+    const request = this.http.post<any>(`${this.baseUrl}/run`, body);
+
+    request.subscribe({
+      next: (response) => {
+        console.log("Received response:", response);
+      },
+      error: (error) => {
+        console.error("Error occurred:", error);
+      },
+      complete: () => {
+        console.log("Request completed.");
+      },
+    });
+
+    return request;
   }
 }

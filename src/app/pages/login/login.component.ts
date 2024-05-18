@@ -1,4 +1,4 @@
-import { Component, OnInit } from "@angular/core";
+import { Component, OnInit, Renderer2 } from "@angular/core";
 import { FormBuilder, FormGroup, Validators } from "@angular/forms";
 import { Router } from "@angular/router";
 import { ToastrService } from "ngx-toastr";
@@ -12,14 +12,16 @@ import { UserService } from "../../service/user-service/user.service";
 })
 export class LoginComponent implements OnInit {
   form: FormGroup;
-  loginError: string | null = null; // Propriété pour contenir le message d'erreur de connexion
+  loginError: string | null = null;
+  showPassword: boolean = false;
 
   constructor(
     private authService: AuthService,
     private formBuilder: FormBuilder,
     private router: Router,
     private toastr: ToastrService,
-    private userservice: UserService
+    private userservice: UserService,
+    private renderer: Renderer2
   ) {}
 
   ngOnInit(): void {
@@ -74,6 +76,22 @@ export class LoginComponent implements OnInit {
         "Veuillez remplir tous les champs correctement.",
         "Erreur de formulaire"
       );
+    }
+  }
+  togglePasswordVisibility(formControlName: string): void {
+    const control = this.form.get(formControlName);
+    if (control) {
+      const inputElement = document.querySelector(
+        `[formControlName="${formControlName}"]`
+      );
+      if (inputElement) {
+        const inputType = inputElement.getAttribute("type");
+        if (inputType === "password") {
+          this.renderer.setAttribute(inputElement, "type", "text");
+        } else {
+          this.renderer.setAttribute(inputElement, "type", "password");
+        }
+      }
     }
   }
 }

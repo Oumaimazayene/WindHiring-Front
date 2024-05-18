@@ -46,10 +46,15 @@
                 </td>
 
                 <td class="align-middle text-center">
-                  <i
-                    class="fas fa-info"
-                    style="font-size: 18px; color: #1c1c2b"
-                  ></i>
+                  <a
+                    routerLinkActive="active"
+                    [routerLink]="['/test', test.id]"
+                  >
+                    <i
+                      class="fas fa-info"
+                      style="font-size: 18px; color: #1c1c2b"
+                    ></i>
+                  </a>
                 </td>
                 <td class="align-items-center">
                   <ng-container *ngIf="test.isSubmitted; else notSubmitted">

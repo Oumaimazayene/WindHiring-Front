@@ -33,13 +33,13 @@ export const ROUTES: RouteInfo[] = [
   {
     path: "/liste-des-utilisateurs",
     title: "Liste des utilisateurs",
-    icon: "ni-bullet-list-67 text-yellow",
+    icon: "fa-solid fa-users text-yellow",
     class: "",
   },
   {
     path: "/liste-des-domaines",
     title: "Liste des domaines",
-    icon: "ni ni-world text-yellow",
+    icon: "fa-solid fa-laptop-code text-yellow",
     class: "",
   },
   {

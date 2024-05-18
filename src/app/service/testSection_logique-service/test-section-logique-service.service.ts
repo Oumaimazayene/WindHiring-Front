@@ -84,4 +84,8 @@ export class TestSectionLogiqueService {
   countTestSectionsByUserUUID(userUUID: string): Observable<number> {
     return this.http.get<number>(`${this.baseUrl}/count/${userUUID}`);
   }
+  getSommeQuestionsPrivees(userUUID: string): Observable<number> {
+    const url = `${this.baseUrl}/private-questions-logic-sum/${userUUID}`;
+    return this.http.get<number>(url).pipe(catchError(this.handleError));
+  }
 }

@@ -5,6 +5,7 @@ import { MatDialog } from "@angular/material/dialog";
 import { DeleteConfirmationDialogComponent } from "./delete-confirmation-dialog/delete-confirmation-dialog.component";
 import { AjoutConfirmationDialogComponent } from "./ajout-confirmation-dialog/ajout-confirmation-dialog.component";
 import { UpdateConfirmationDialogComponent } from "./update-confirmation-dialog/update-confirmation-dialog.component";
+import { ToastrService } from "ngx-toastr";
 
 @Component({
   selector: "app-domains",
@@ -12,6 +13,8 @@ import { UpdateConfirmationDialogComponent } from "./update-confirmation-dialog/
   styleUrls: ["./domains.component.scss"],
 })
 export class DomainsComponent implements OnInit {
+  filterName: string;
+  filteredDomaines: Domaine[];
   domaines: Domaine[];
   newDomaine: Domaine = {
     name: "",
@@ -23,9 +26,15 @@ export class DomainsComponent implements OnInit {
   showUpdateCard: boolean = false;
   showDeleteConfirmation: boolean = false;
   domainIdToDelete: number;
+  currentPage: number = 1;
+  pageSize: number = 5;
+  totalItems: number = 0;
+  pagedDomaines: Domaine[] = [];
+
   constructor(
     private domaineService: DomainsService,
-    private dialog: MatDialog
+    private dialog: MatDialog,
+    private toastr: ToastrService
   ) {}
 
   ngOnInit(): void {
@@ -35,23 +44,31 @@ export class DomainsComponent implements OnInit {
   getAllDomaines() {
     this.domaineService.getAllDomaines().subscribe((domaines) => {
       this.domaines = domaines;
+      this.filterDomaines();
     });
   }
+
   openAddDomainDialog(): void {
     const dialogRef = this.dialog.open(AjoutConfirmationDialogComponent);
 
     dialogRef.afterClosed().subscribe((newDomaine: Domaine) => {
       if (newDomaine) {
-        // Si un nouveau domaine est ajouté, envoyez-le au service pour l'ajouter
         this.addDomaine(newDomaine);
       }
     });
   }
 
   addDomaine(newDomaine: Domaine): void {
-    this.domaineService.addDomaine(newDomaine).subscribe(() => {
-      this.getAllDomaines(); // Mettez à jour la liste des domaines après l'ajout
-    });
+    this.domaineService.addDomaine(newDomaine).subscribe(
+      () => {
+        this.getAllDomaines();
+        this.toastr.success("Domaine ajouté avec succès");
+      },
+      (error) => {
+        console.error("Erreur lors de l'ajout du domaine :", error);
+        this.toastr.error("Erreur lors de l'ajout du domaine");
+      }
+    );
   }
 
   resetNewDomaine() {
@@ -75,34 +92,29 @@ export class DomainsComponent implements OnInit {
   }
 
   deleteDomaine(id: number) {
-    this.domaineService.deleteDomaine(id).subscribe(() => {
-      this.getAllDomaines();
-    });
-  }
-  // Dans votre composant TypeScript
-  closeDeleteConfirmationModal(): void {
-    this.showDeleteConfirmation = false;
-  }
-
-  confirmDeleteDomaine() {
-    // Supprimer le domaine avec l'ID `domainIdToDelete`
-    this.domaineService.deleteDomaine(this.domainIdToDelete).subscribe(() => {
-      this.getAllDomaines();
-      this.closeDeleteConfirmationModal();
-    });
+    this.domaineService.deleteDomaine(id).subscribe(
+      () => {
+        this.getAllDomaines();
+        this.toastr.success("Domaine supprimé avec succès");
+      },
+      (error) => {
+        console.error("Erreur lors de la suppression du domaine :", error);
+        this.toastr.error("Erreur lors de la suppression du domaine");
+      }
+    );
   }
 
   editDomaine(domaine: Domaine) {
     this.showUpdateCard = true;
-
     this.domaineToEdit = { ...domaine };
   }
+
   openUpdateDialog(domaine: Domaine): void {
     const dialogRef = this.dialog.open(UpdateConfirmationDialogComponent, {
       data: domaine,
     });
+
     dialogRef.afterClosed().subscribe((result: Domaine) => {
-      console.log("Dialog closed with result:", result);
       if (result) {
         this.updateDomaine(result);
       }
@@ -112,9 +124,47 @@ export class DomainsComponent implements OnInit {
   updateDomaine(domaineToUpdate: Domaine) {
     this.domaineService
       .updateDomaine(domaineToUpdate.id, domaineToUpdate)
-      .subscribe(() => {
-        this.getAllDomaines();
-        this.showUpdateCard = false;
-      });
+      .subscribe(
+        () => {
+          this.getAllDomaines();
+          this.toastr.success("Domaine mis à jour avec succès");
+        },
+        (error) => {
+          console.error("Erreur lors de la mise à jour du domaine :", error);
+          this.toastr.error("Erreur lors de la mise à jour du domaine");
+        }
+      );
+  }
+
+  searchDomaines(): void {
+    this.currentPage = 1;
+    this.filterDomaines();
+  }
+
+  filterDomaines(): void {
+    if (!this.filterName) {
+      this.filteredDomaines = [...this.domaines];
+    } else {
+      this.filteredDomaines = this.domaines.filter((domaine) =>
+        domaine.name.toLowerCase().includes(this.filterName.toLowerCase())
+      );
+    }
+    this.totalItems = this.filteredDomaines.length;
+    this.setPage(this.currentPage);
+  }
+
+  setPage(page: number): void {
+    this.currentPage = page;
+    const startIndex = (page - 1) * this.pageSize;
+    const endIndex = Math.min(startIndex + this.pageSize, this.totalItems);
+    this.pagedDomaines = this.filteredDomaines.slice(startIndex, endIndex);
+  }
+
+  pageChanged(event: number): void {
+    this.setPage(event);
+  }
+
+  refreshQuestion(): void {
+    this.setPage(this.currentPage);
   }
 }

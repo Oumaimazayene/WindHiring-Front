@@ -45,6 +45,21 @@
                   type="password"
                   aria-label="Password"
                 />
+                <div class="input-group-append">
+                  <button
+                    class="btn btn-outline-secondary"
+                    type="button"
+                    (click)="togglePasswordVisibility('password')"
+                  >
+                    <i
+                      class="fa"
+                      [ngClass]="{
+                        'fa-eye': showPassword,
+                        'fa-eye-slash': !showPassword
+                      }"
+                    ></i>
+                  </button>
+                </div>
               </div>
               <div
                 *ngIf="

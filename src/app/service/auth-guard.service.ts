@@ -16,4 +16,21 @@ export class AuthGuardService {
       return false;
     }
   }
+  canActivateAdmin(): boolean {
+    const role = this.authService.extractRoleFromToken();
+    if (role !== "admin") {
+      this.router.navigate(["/unauthorized"]);
+      return false;
+    }
+    return true;
+  }
+
+  canActivateRecruteur(): boolean {
+    const role = this.authService.extractRoleFromToken();
+    if (role !== "recruteur") {
+      this.router.navigate(["/unauthorized"]);
+      return false;
+    }
+    return true;
+  }
 }

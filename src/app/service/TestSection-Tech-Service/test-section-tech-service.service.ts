@@ -66,4 +66,9 @@ export class TestSectionTechServiceService {
       .post<any>(url, questionTechDTo)
       .pipe(catchError(this.handleError));
   }
+
+  getPrivateQuestionsSumByUserUUID(userUUID: string): Observable<number> {
+    const url = `${this.baseUrl}/private-questions-sum/${userUUID}`;
+    return this.http.get<number>(url);
+  }
 }

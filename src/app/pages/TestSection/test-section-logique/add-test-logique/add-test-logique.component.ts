@@ -1,6 +1,7 @@
 import { Component, Inject, OnInit } from "@angular/core";
 import { FormBuilder, FormGroup, Validators } from "@angular/forms";
 import { MatDialogRef, MAT_DIALOG_DATA } from "@angular/material/dialog";
+import { ToastrService } from "ngx-toastr";
 import { TestService } from "src/app/service/test-service/test.service";
 import { TestSectionLogiqueService } from "src/app/service/testSection_logique-service/test-section-logique-service.service";
 
@@ -22,6 +23,8 @@ export class AddTestLogiqueComponent implements OnInit {
     private formBuilder: FormBuilder,
     private TestSectionLogiqueService: TestSectionLogiqueService,
     private testService: TestService,
+    private toastr: ToastrService,
+
     @Inject(MAT_DIALOG_DATA) private data: any
   ) {
     this.testSectionUUID = data.testSectionUUID;
@@ -86,10 +89,7 @@ export class AddTestLogiqueComponent implements OnInit {
               "Réponse de l'API après la création du test logique :",
               data
             );
-            this.successMessage = "Test logique créé avec succès.";
-            setTimeout(() => {
-              this.dialogRef.close();
-            }, 2000);
+            this.toastr.success("Test logique créé avec succès.");
           },
           (error) => {
             this.errorMessage =
@@ -97,6 +97,9 @@ export class AddTestLogiqueComponent implements OnInit {
             console.error(
               "Erreur lors de la création du test logique :",
               error
+            );
+            this.toastr.error(
+              "Erreur lors de la création du test logique : " + error.message
             );
           }
         );

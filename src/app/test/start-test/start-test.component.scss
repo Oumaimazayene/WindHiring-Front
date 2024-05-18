@@ -121,7 +121,6 @@ div.label-box {
   padding: 3%;
   background-color: rgba(197, 197, 197, 0.5);
 }
-// Styles pour la barre d'outils
 .mat-toolbar {
   height: 64px;
   padding: 0 16px;
@@ -131,15 +130,13 @@ div.label-box {
     margin-right: 12px;
   }
 
-  // Styles pour l'espace entre le logo et les autres éléments
   .toolbar-space {
-    // Permettre à cet élément de remplir tout l'espace disponible
     flex: 1;
   }
 }
 .button-container {
   position: fixed;
-  bottom: 150px; /* Ajustez cette valeur selon vos besoins */
+  bottom: 150px;
   left: 50%;
   transform: translateX(-50%);
 }
@@ -171,4 +168,26 @@ div.label-box {
 }
 .add-bouton:hover {
   border-color: white;
+}
+
+.output {
+  border-bottom-left-radius: 0.5rem !important;
+  border-bottom-right-radius: 0.5rem !important;
+}
+.add-bouton {
+  color: #1c1c2b;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 16px;
+  font-weight: normal;
+
+  background-color: #efcc0b;
+}
+.unselectable {
+  -webkit-user-select: none; /* Pour les navigateurs basés sur WebKit (Chrome, Safari, etc.) */
+  -moz-user-select: none; /* Pour Mozilla Firefox */
+  -ms-user-select: none; /* Pour Internet Explorer */
+  user-select: none; /* Norme */
 }

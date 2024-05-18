@@ -7,6 +7,7 @@ import { ViewQuestionLogDialogComponent } from "src/app/pages/Question/questions
 import { MatDialog } from "@angular/material/dialog";
 import { AddQuestionPriveeLogDialogComponent } from "../add-question-privee-log-dialog/add-question-privee-log-dialog.component";
 import { AddQuestionLogDialogComponent } from "../../../Question/questions-log/add-question-log-dialog/add-question-log-dialog.component";
+import { ToastrService } from "ngx-toastr";
 
 @Component({
   selector: "app-questionprive-log",
@@ -21,7 +22,8 @@ export class QuestionpriveLogComponent implements OnInit {
     private testSectionLogiqueService: TestSectionLogiqueService,
     private route: ActivatedRoute,
     private questionLogicService: QuestionLogicService,
-    private dialog: MatDialog
+    private dialog: MatDialog,
+    private toastr: ToastrService
   ) {}
 
   ngOnInit(): void {
@@ -77,9 +79,13 @@ export class QuestionpriveLogComponent implements OnInit {
               formData.imageFile,
               questionLogicDtoJson
             );
+            this.toastr.success("Question privée créer avec succés ");
             this.getPrivateQuestions(this.testSectionId);
           } else {
             console.error("ID de la section de test non trouvé dans l'URL.");
+            this.toastr.error(
+              "erreur lors de création de question privée essayer une autre fois"
+            );
           }
         });
       }

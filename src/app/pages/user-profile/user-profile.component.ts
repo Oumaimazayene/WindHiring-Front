@@ -4,6 +4,7 @@ import { UserService } from "src/app/service/user-service/user.service";
 import { AuthService } from "src/app/service/auth.service";
 import { Observable } from "rxjs";
 import { HttpClient } from "@angular/common/http";
+import { ToastrService } from "ngx-toastr";
 
 @Component({
   selector: "app-user-profile",
@@ -30,7 +31,8 @@ export class UserProfileComponent implements OnInit {
   constructor(
     private userService: UserService,
     private authService: AuthService,
-    private http: HttpClient
+    private http: HttpClient,
+    private toastr: ToastrService
   ) {}
 
   ngOnInit(): void {
@@ -90,6 +92,7 @@ export class UserProfileComponent implements OnInit {
     this.userService.updateUser(this.userId, formData).subscribe(
       (updatedUser) => {
         console.log("Utilisateur mis à jour avec succès :", updatedUser);
+        this.toastr.success("Utilisateur mis à jour avec succès");
         this.getUserByUUID();
       },
       (error) => {
@@ -97,6 +100,7 @@ export class UserProfileComponent implements OnInit {
           "Erreur lors de la mise à jour de l'utilisateur :",
           error
         );
+        this.toastr.error("Erreur lors de la mise à jour de l'utilisateur ");
       }
     );
   }

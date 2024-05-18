@@ -89,8 +89,10 @@ export class TestService {
       idQuestion: item.idQuestion,
       reponses: item.reponses || [],
     }));
-    return this.http.post<any>(url, body);
+
+    return this.http.post(url, body, { responseType: "text" });
   }
+
   createTestTechnique(testSectionTechId: string): Observable<any> {
     const url = `${this.baseUrl}/createTestTechnique`;
     const params = new HttpParams().set("testSectionTechId", testSectionTechId);
@@ -99,6 +101,17 @@ export class TestService {
         console.error("Erreur lors de la création du test technique :", error);
         return throwError(
           "Erreur lors de la création du test technique. Veuillez réessayer plus tard."
+        );
+      })
+    );
+  }
+  submitTest(testId: number): Observable<any> {
+    const url = `${this.baseUrl}/submitted/${testId}`;
+    return this.http.put<any>(url, {}).pipe(
+      catchError((error) => {
+        console.error("Erreur lors de la soumission du test :", error);
+        return throwError(
+          "Erreur lors de la soumission du test. Veuillez réessayer plus tard."
         );
       })
     );

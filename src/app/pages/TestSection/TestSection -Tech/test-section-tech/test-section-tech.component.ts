@@ -8,6 +8,7 @@ import { AddTestSectionTechDialogComponent } from "../add-test-section-tech-dial
 import { questionTech } from "src/app/Models/questionTech";
 import { Observable, catchError, throwError } from "rxjs";
 import { Router } from "@angular/router";
+import { ToastrService } from "ngx-toastr";
 
 @Component({
   selector: "app-test-section-tech",
@@ -22,15 +23,24 @@ export class TestSectionTechComponent implements OnInit {
   pageSize: number = 5;
   totalItems: number = 0;
   newSection: TestSectionTech = {};
+  sommeQuestionsPrivees: number;
+
   constructor(
     private authService: AuthService,
     private testSectionTechService: TestSectionTechServiceService,
     private dialog: MatDialog,
-    private router: Router
+    private router: Router,
+    private toastr: ToastrService
   ) {}
 
   ngOnInit(): void {
     const uuid = this.authService.extractUUIDFromToken();
+    this.testSectionTechService
+      .getPrivateQuestionsSumByUserUUID(uuid)
+      .subscribe((sommeQuestionsPrivees: number) => {
+        this.sommeQuestionsPrivees = sommeQuestionsPrivees;
+        console.log("Somme des questions privées :", sommeQuestionsPrivees);
+      });
     this.getTestSectionsByUserUUID(uuid);
   }
 
@@ -42,6 +52,7 @@ export class TestSectionTechComponent implements OnInit {
         this.totalItems = this.testSectionTech.length;
         this.setPage(1);
         console.log("testsection", this.testSectionTech);
+        console.log("aaaa", this.totalItems);
       });
   }
   setPage(page: number): void {
@@ -60,12 +71,21 @@ export class TestSectionTechComponent implements OnInit {
 
   createTestSection(newSection: any): void {
     const uuid = this.authService.extractUUIDFromToken();
-    this.testSectionTechService
-      .createTestSection(newSection, uuid)
-      .subscribe((data) => {
+    this.testSectionTechService.createTestSection(newSection, uuid).subscribe(
+      (data) => {
         console.log("Section de test créée :", data);
+        this.toastr.success("Section de test créée avec succès");
+
         this.getTestSectionsByUserUUID(uuid);
-      });
+      },
+      (error) => {
+        console.error(
+          "Erreur lors de la création de la section de test :",
+          error
+        );
+        this.toastr.error("Erreur lors de la création de la section de test");
+      }
+    );
   }
 
   openViewTestSectionTechDialog(id: number): void {

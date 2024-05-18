@@ -6,6 +6,7 @@ import { TestSectionTechServiceService } from "src/app/service/TestSection-Tech-
 import { QuestionsTechService } from "../../../../service/question-tech/questions-tech.service";
 import { AfficheQuestionTechDialogComponent } from "src/app/pages/Question/questions-tech/affiche-question-tech-dialog/affiche-question-tech-dialog.component";
 import { AddquestionTechPriveComponent } from "../addquestion-tech-prive/addquestion-tech-prive.component";
+import { ToastrService } from "ngx-toastr";
 
 @Component({
   selector: "app-question-tech-prive",
@@ -20,6 +21,7 @@ export class QuestionTechPriveComponent implements OnInit {
     private testSectiontechService: TestSectionTechServiceService,
     private route: ActivatedRoute,
     private dialog: MatDialog,
+    private toastr: ToastrService,
     private QuestionsTechService: QuestionsTechService
   ) {}
 
@@ -83,10 +85,14 @@ export class QuestionTechPriveComponent implements OnInit {
       .subscribe(
         (response) => {
           console.log("Question ajoutée avec succès : ", response);
+          this.toastr.success("Question ajoutée avec succès ");
           this.getPrivateQuestions(testSectionId);
         },
         (error) => {
           console.error("Erreur lors de l'ajout de la question : ", error);
+          this.toastr.error(
+            "Erreur lors de l'ajout de la question essayer  une autre fois "
+          );
         }
       );
   }

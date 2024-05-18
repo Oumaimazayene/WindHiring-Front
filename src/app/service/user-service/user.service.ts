@@ -1,7 +1,8 @@
 import { HttpClient } from "@angular/common/http";
 import { Injectable } from "@angular/core";
-import { Observable, catchError, throwError } from "rxjs";
+import { Observable, throwError } from "rxjs";
 import { User } from "../../Models/user";
+import { tap, catchError, map } from "rxjs/operators";
 
 @Injectable({
   providedIn: "root",
@@ -12,9 +13,8 @@ export class UserService {
   constructor(private http: HttpClient) {}
 
   getUserByUUID(uuid: string): Observable<User> {
-    // Spécifier le type de retour comme Observable<User>
     return this.http
-      .get<User>(`${this.apiUrl}/${uuid}`) // Spécifier le type de réponse comme User
+      .get<User>(`${this.apiUrl}/${uuid}`)
       .pipe(catchError(this.handleError));
   }
   getAllUsers(): Observable<User[]> {
@@ -39,15 +39,28 @@ export class UserService {
   validateUser(userId: number): Observable<any> {
     const url = `${this.apiUrl}/validate/${userId}`;
     return this.http.post<any>(url, {}).pipe(
+      tap((response) => {
+        console.log("Validation réussie:", response);
+      }),
+      map((response) => {
+        return { success: true, message: "Validation réussie" };
+      }),
       catchError((error) => {
-        console.error("Erreur lors de la validation de l'utilisateur :", error);
-        return throwError(
-          "Une erreur est survenue, veuillez réessayer plus tard."
+        let errorMessage =
+          "Une erreur est survenue, veuillez réessayer plus tard.";
+        if (error.error && typeof error.error === "string") {
+          errorMessage = error.error;
+        } else if (error.statusText) {
+          errorMessage = error.statusText;
+        }
+        console.error(
+          "Erreur lors de la validation de l'utilisateur :",
+          errorMessage
         );
+        return throwError(errorMessage);
       })
     );
   }
-
   updateUser(id: number, formData: FormData): Observable<any> {
     return this.http.put(`${this.apiUrl}/${id}`, formData).pipe(
       catchError((error) => {
@@ -60,5 +73,12 @@ export class UserService {
         );
       })
     );
+  }
+  getCountValidUsers(): Observable<number> {
+    return this.http.get<number>(`${this.apiUrl}/users/valid/count`);
+  }
+
+  getCountInvalidUsers(): Observable<number> {
+    return this.http.get<number>(`${this.apiUrl}/users/invalid/count`);
   }
 }

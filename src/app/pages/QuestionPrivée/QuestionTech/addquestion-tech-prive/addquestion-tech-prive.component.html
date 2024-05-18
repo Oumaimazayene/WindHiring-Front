@@ -4,19 +4,16 @@
       <i
         class="fas fa-times"
         (click)="closeDialog()"
-        style="font-size: 18px"
+        style="font-size: 18px; cursor: pointer"
       ></i>
     </div>
     <mat-horizontal-stepper #stepper>
-      <!-- Première étape -->
       <mat-step>
         <ng-template matStepLabel>Informations générales</ng-template>
 
-        <!-- Affichage de l'en-tête et du formulaire principal -->
         <div *ngIf="!showAnswersInput">
           <h1>Nouvelle question technique</h1>
           <div class="row">
-            <!-- Titre -->
             <div class="col-md-4 mb-3">
               <label for="title">Titre</label>
               <input
@@ -28,7 +25,6 @@
                 [(ngModel)]="newQuestion.title"
               />
             </div>
-            <!-- Type -->
             <div class="col-md-4">
               <div class="row">
                 <div class="col-md-12">
@@ -48,7 +44,6 @@
                 </div>
               </div>
             </div>
-            <!-- Domaine -->
             <div class="col-md-4">
               <div class="row">
                 <div class="col-md-12">
@@ -71,7 +66,6 @@
                 </div>
               </div>
             </div>
-            <!-- Contenu de la question -->
             <div class="col-md-12">
               <label for="questionBody">Contenu de Question</label>
               <textarea
@@ -84,7 +78,6 @@
                 required
               ></textarea>
             </div>
-            <!-- Durée -->
             <div class="col-md-4 mb-3 mt-3">
               <label for="time">Durée</label>
               <input
@@ -96,7 +89,6 @@
                 [(ngModel)]="newQuestion.time"
               />
             </div>
-            <!-- Score -->
             <div class="col-md-4 mb-3 mt-3">
               <label for="score">Score</label>
               <input
@@ -108,7 +100,6 @@
                 [(ngModel)]="newQuestion.score"
               />
             </div>
-            <!-- Difficulté -->
             <div class="col-md-4 mb-3 mt-3">
               <label for="difficulty">Difficulté</label>
               <select
@@ -128,7 +119,6 @@
             </div>
           </div>
         </div>
-
         <div class="col-md-12 text-right">
           <button
             type="button"
@@ -141,8 +131,6 @@
         </div>
       </mat-step>
 
-      <!-- Deuxième étape -->
-
       <mat-step>
         <ng-template matStepLabel>Ajouter des Réponses</ng-template>
         <div class="card card-main">
@@ -152,7 +140,6 @@
               <strong> Ajouter des Réponses </strong>
             </span>
           </div>
-
           <div class="card-body">
             <form (ngSubmit)="submitAndAddAnswer()">
               <div class="row">
@@ -172,7 +159,10 @@
                           class="input-group-text"
                           (click)="submitAndAddAnswer()"
                         >
-                          <i class="fa-solid fa-cart-plus"></i>
+                          <i
+                            class="fa-regular fa-square-plus"
+                            style="font-size: 18px; cursor: pointer"
+                          ></i>
                         </a>
                       </div>
                     </div>
@@ -198,10 +188,14 @@
                             >{{ answer }}</label
                           >
                         </div>
-                        <i
-                          class="fas fa-trash-alt"
+                        <div
+                          type="button"
+                          class="btn-secondary"
                           (click)="removeAnswer(i)"
-                        ></i>
+                          style="font-size: 20px"
+                        >
+                          <i class="fas fa-trash-alt"></i>
+                        </div>
                       </div>
                     </li>
                   </ul>
@@ -211,7 +205,7 @@
             </form>
           </div>
         </div>
-        <div class="col-md-12 text-right mt-2">
+        <div class="col-md-12 text-left mt-2">
           <button
             type="button"
             class="btn btn-secondary ml-2"

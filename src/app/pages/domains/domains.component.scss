@@ -30,7 +30,7 @@
   font-size: 16px;
   font-weight: normal;
 
-  background-color: #efcc0b; 
+  background-color: #efcc0b;
 }
 .add-bouton:hover {
   border-color: white;
@@ -43,4 +43,16 @@
 
 .clickable-icon:hover {
   color: #eab308;
+}
+.success-snackbar {
+  background-color: #4caf50;
+  color: white;
+}
+
+.error-snackbar {
+  background-color: #f44336;
+  color: white;
+}
+::ng-deep .mat-paginator {
+  margin: 16px 0;
 }

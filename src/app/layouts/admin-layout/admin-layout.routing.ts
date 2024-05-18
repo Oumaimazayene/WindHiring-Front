@@ -1,4 +1,4 @@
-import { Routes } from "@angular/router";
+import { Routes, CanActivate } from "@angular/router";
 import { DashboardComponent } from "../../pages/dashboard/dashboard.component";
 import { UserProfileComponent } from "../../pages/user-profile/user-profile.component";
 import { UserComponent } from "src/app/pages/user/user.component";
@@ -12,7 +12,8 @@ import { TestSectionTechComponent } from "src/app/pages/TestSection/TestSection 
 import { QuestionTechPriveComponent } from "src/app/pages/QuestionPrivée/QuestionTech/question-tech-prive/question-tech-prive.component";
 import { ListTestComponent } from "../../pages/TestSection/list-test/list-test.component";
 import { ListTestTechComponent } from "src/app/pages/TestSection/TestSection -Tech/list-test-tech/list-test-tech.component";
-
+import { ChangePasswordComponent } from "src/app/pages/change-password/change-password.component";
+import { TestdetailsComponent } from "src/app/pages/TestSection/list-test/testdetails/testdetails.component";
 export const AdminLayoutRoutes: Routes = [
   {
     path: "dashboard",
@@ -72,6 +73,16 @@ export const AdminLayoutRoutes: Routes = [
   {
     path: "liste-des-Tests-Tech/:testSectionUUID",
     component: ListTestTechComponent,
+    canActivate: [AuthGuardService],
+  },
+  {
+    path: "changer-mot-de-passe",
+    component: ChangePasswordComponent,
+    canActivate: [AuthGuardService],
+  },
+  {
+    path: "/test/:id",
+    component: TestdetailsComponent,
     canActivate: [AuthGuardService],
   },
 ];

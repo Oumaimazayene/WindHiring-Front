@@ -5,6 +5,7 @@ import { AddTestLogiqueComponent } from "../test-section-logique/add-test-logiqu
 import { MatDialog } from "@angular/material/dialog";
 import { TestSectionLogiqueService } from "src/app/service/testSection_logique-service/test-section-logique-service.service";
 import { SendTestComponent } from "./send-test/send-test.component";
+import { ToastrService } from "ngx-toastr";
 
 @Component({
   selector: "app-list-test",
@@ -24,6 +25,7 @@ export class ListTestComponent implements OnInit {
   constructor(
     private route: ActivatedRoute,
     private testService: TestService,
+    private toastr: ToastrService,
     private dialog: MatDialog,
     private testSectionLogiqueService: TestSectionLogiqueService
   ) {}
@@ -31,12 +33,14 @@ export class ListTestComponent implements OnInit {
     this.route.params.subscribe((params) => {
       this.testSectionUUID = params["testSectionUUID"];
       console.log("UUID de la section de test:", this.testSectionUUID);
+
       if (this.testSectionUUID) {
         this.getTests(this.testSectionUUID);
       } else {
         console.error("UUID de la section de test non valide.");
       }
     });
+    this.getTests(this.testSectionUUID);
   }
   getTests(testSectionUUID: string): void {
     this.testService.getTestsByTestSectionUUID(testSectionUUID).subscribe(
@@ -47,6 +51,7 @@ export class ListTestComponent implements OnInit {
         this.totalItems = this.tests.length;
 
         this.setPage(1);
+        console.log("aaaaa", this.tests);
       },
       (error) => {
         console.error("Erreur lors de la récupération des tests:", error);
@@ -80,9 +85,13 @@ export class ListTestComponent implements OnInit {
               result.size,
               result.privateqts
             );
+            this.toastr.success("Test créer  avec succés");
           } else {
             console.error(
               "Les valeurs de size et privateqts doivent être des nombres positifs ou nuls."
+            );
+            this.toastr.error(
+              "Erreur de création de test essayer une autre fois "
             );
           }
         }

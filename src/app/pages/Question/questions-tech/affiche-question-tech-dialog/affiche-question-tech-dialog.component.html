@@ -1,6 +1,6 @@
 <div class="container" *ngIf="question">
   <div class="d-flex justify-content-end mb-3" (click)="closeDialog()">
-    <i class="fas fa-times" style="font-size: 18px"></i>
+    <i class="fas fa-times" style="font-size: 18px; cursor: pointer"></i>
   </div>
   <div class="card card-main">
     <div class="card-header">
@@ -42,7 +42,9 @@
             class="form-control"
             id="exampleFormControlInput1"
             disabled
-            placeholder="{{ question.domain.name }}"
+            placeholder="{{ question.domain.name }}..{{
+              question.domain.version
+            }}"
           />
         </div>
       </div>
@@ -113,7 +115,7 @@
             mat-button
             [mat-dialog-close]="false"
           >
-            <span> <i class="fa-solid fa-rotate-left"></i>retourner</span>
+            <span>retourner</span>
           </div>
         </div>
       </div>
@@ -123,12 +125,16 @@
           <div #collapse="ngbCollapse" [(ngbCollapse)]="isCollapsed">
             <div class="card" style="overflow-y: auto">
               <div class="card-body">
-                <div
-                  class="row"
-                  *ngFor="let el of question.answer; let i = index"
-                >
-                  <div class="col-md-12">
-                    <h3>Answer {{ i + 1 }}: {{ el.answer }}</h3>
+                <div class="card-body">
+                  <div
+                    class="row"
+                    *ngFor="let el of question.answer; let i = index"
+                  >
+                    <div class="col-md-12">
+                      <h3 [style.color]="el.isTrue ? 'green' : 'red'">
+                        Answer {{ i + 1 }}: {{ el.answer }}
+                      </h3>
+                    </div>
                   </div>
                 </div>
               </div>

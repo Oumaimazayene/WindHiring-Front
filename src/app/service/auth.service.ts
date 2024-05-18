@@ -82,6 +82,33 @@ export class AuthService {
         catchError(this.handleError)
       );
   }
+  changePassword(
+    email: string,
+    oldPassword: string,
+    newPassword: string
+  ): Observable<any> {
+    return this.http.put<any>(
+      `${this.apiUrl}/change-password?email=${email}&oldPassword=${oldPassword}&newPassword=${newPassword}`,
+      null
+    );
+  }
+
+  extractRoleFromToken(): string | null {
+    const token = localStorage.getItem(this.tokenKey);
+    if (token) {
+      try {
+        const tokenPayload = token.split(".")[1];
+        const decodedPayload = JSON.parse(atob(tokenPayload));
+        console.log("Role:", decodedPayload.role); // Ajouté pour debug
+        return decodedPayload.role || null;
+      } catch (error) {
+        console.error("Erreur lors de l'extraction du rôle du token:", error);
+        return null;
+      }
+    }
+    return null;
+  }
+
   private handleError(error: any): Observable<never> {
     console.error("Erreur de requête :", error);
     return throwError("Une erreur est survenue, veuillez réessayer plus tard.");

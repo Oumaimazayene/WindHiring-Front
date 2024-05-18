@@ -1,27 +1,43 @@
-import { Component, OnInit, ViewChild } from "@angular/core";
 import { ActivatedRoute } from "@angular/router";
 import { Answer } from "src/app/Models/Answer";
-import { questionLog } from "src/app/Models/questionLog";
 import { submittedQuestionlogique } from "src/app/Models/submittedQuestionlogique";
 import { TestService } from "src/app/service/test-service/test.service";
 import { CountdownEvent, CountdownComponent } from "ngx-countdown";
+import { CookieService } from "ngx-cookie-service";
 
+import {
+  AfterViewInit,
+  Component,
+  ElementRef,
+  OnDestroy,
+  OnInit,
+  HostListener,
+  ViewChild,
+} from "@angular/core";
+import "ace-builds/src-noconflict/ace";
+import "ace-builds/src-noconflict/theme-monokai";
+import "ace-builds/src-noconflict/mode-javascript";
+import { CodeServiceService } from "src/app/service/code-service/code-service.service";
+import * as ace from "ace-builds";
 
 @Component({
   selector: "app-start-test",
   templateUrl: "./start-test.component.html",
   styleUrls: ["./start-test.component.scss"],
 })
-export class StartTestComponent implements OnInit {
-  @ViewChild("countdown", {
-    static: false,
-  })
-  countdown: CountdownComponent;
+export class StartTestComponent implements OnInit, AfterViewInit, OnDestroy {
+  @ViewChild("editor") private editorRef!: ElementRef;
 
+  @ViewChild("countdown", { static: false }) countdown: CountdownComponent;
+  response: any;
+  isEditorVisible: boolean = true;
+  private language: string;
+  private version: string;
+  private stdin: "";
   tick = 1000;
   public id: any;
   public counter: any;
-  public questionList: questionLog[] = [];
+  public questionList: any[] = [];
   public color: string = "black";
   public htmlContent: String = "";
   public questionType: any;
@@ -39,8 +55,51 @@ export class StartTestComponent implements OnInit {
 
   constructor(
     private route: ActivatedRoute,
-    private testService: TestService
+    private testService: TestService,
+    private CodeService: CodeServiceService,
+    private cookieService: CookieService
   ) {}
+
+  @HostListener("copy", ["$event"])
+  onCopy(event: any) {
+    event.preventDefault();
+  }
+
+  @HostListener("cut", ["$event"])
+  onCut(event: any) {
+    event.preventDefault();
+  }
+
+  @HostListener("paste", ["$event"])
+  onPaste(event: any) {
+    event.preventDefault();
+  }
+
+  ngAfterViewInit(): void {
+    if (
+      this.isEditorVisible &&
+      this.editorRef &&
+      this.editorRef.nativeElement
+    ) {
+      const editor = ace.edit(this.editorRef.nativeElement);
+      this.configureAce(editor);
+    } else {
+      console.error(
+        "Editor element not found in the DOM or editor is not visible."
+      );
+    }
+  }
+  private configureAce(editor: any): void {
+    editor.setTheme("ace/theme/monokai");
+    editor.getSession().setMode("ace/mode/javascript");
+    editor.setOptions({
+      enableBasicAutocompletion: true,
+      enableSnippets: true,
+      enableLiveAutocompletion: true,
+      enableBeautify: true,
+      fontSize: "16px",
+    });
+  }
 
   ngOnInit(): void {
     this.id = this.route.snapshot.paramMap.get("id");
@@ -53,6 +112,7 @@ export class StartTestComponent implements OnInit {
           this.currentQuestion = this.questionList[this.currentQuestionIndex];
           this.counter = this.currentQuestion.time;
           this.questionType = this.currentQuestion.type.name;
+          console.log("liste des question ", this.questionList);
           console.log("currentQuestion:", this.currentQuestion);
           console.log("questionType:", this.questionType);
         }
@@ -61,6 +121,10 @@ export class StartTestComponent implements OnInit {
         console.error("Erreur lors de la récupération des questions:", error);
       }
     );
+    const alreadySubmitted = this.cookieService.get("alreadySubmitted");
+    if (alreadySubmitted === "true") {
+      this.alreadySubmitted = true;
+    }
   }
 
   endTest() {
@@ -71,7 +135,6 @@ export class StartTestComponent implements OnInit {
       .subscribe(
         (response) => {
           console.log("Rapport généré avec succès :", response);
-          this.alreadySubmitted = true;
           this.ended = true;
         },
         (error) => {
@@ -81,6 +144,7 @@ export class StartTestComponent implements OnInit {
 
     this.isCompleted = true;
   }
+
   goToNextQuestion(): void {
     if (this.currentQuestionIndex < this.questionList.length - 1) {
       const submittedQuestionIndex = this.submittedQuestions.findIndex(
@@ -95,16 +159,15 @@ export class StartTestComponent implements OnInit {
         this.submittedQuestions.push(submittedQuestion);
       }
 
-      // Passer à la question suivante
       this.currentQuestionIndex++;
       this.currentQuestion = this.questionList[this.currentQuestionIndex];
       this.counter = this.currentQuestion.time;
       this.showAnswerSection = false;
+      this.questionType = this.currentQuestion.type.name;
     } else {
       this.allQuestionsAnswered = true;
     }
   }
-
   onTimerFinished(e: CountdownEvent) {
     if (e.action === "done") {
       console.log("Temps écoulé. Passage à la question suivante...");
@@ -118,6 +181,10 @@ export class StartTestComponent implements OnInit {
       this.checkAndSubmitAnswer();
       this.color = "black";
       this.counter = this.questionList[this.currentQuestionIndex].time;
+    }
+
+    if (this.isLastQuestion() && e.action === "done") {
+      this.onSubmitTest(this.id);
     }
   }
 
@@ -258,18 +325,8 @@ export class StartTestComponent implements OnInit {
       .generateFreemarkerTestReport(this.id, this.submittedQuestions)
       .subscribe(
         (response) => {
-          try {
-            const contentType = response.headers
-              .get("content-type")
-              ?.toLowerCase();
-            if (contentType && contentType.includes("application/json")) {
-              const jsonResponse = JSON.parse(response.text());
-            } else {
-              console.log(response.text());
-            }
-          } catch (error) {
-            console.error("Erreur lors de la génération du rapport :", error);
-          }
+          console.log(response);
+          this.onSubmitTest(this.id);
         },
         (error) => {
           console.error("Erreur lors de la génération du rapport :", error);
@@ -279,5 +336,72 @@ export class StartTestComponent implements OnInit {
 
   isLastQuestion(): boolean {
     return this.currentQuestionIndex === this.questionList.length - 1;
+  }
+  runCode() {
+    const currentQuestion = this.currentQuestion;
+
+    if (!currentQuestion) {
+      console.error("currentQuestion n'est pas défini.");
+      return;
+    }
+
+    if (this.editorRef && this.editorRef.nativeElement) {
+      const editor = ace.edit(this.editorRef.nativeElement);
+      const script = editor.getValue();
+      this.language = currentQuestion.domain.lang;
+      this.version = currentQuestion.domain.version;
+      this.stdin = null;
+      console.log(this.language);
+      console.log(this.version);
+      console.log(script);
+      console.log(this.stdin);
+      this.CodeService.runScript(
+        this.language,
+        this.version,
+        script,
+        this.stdin
+      ).subscribe(
+        (response) => {
+          console.log("Réponse reçue :", response);
+          if (response && response.output) {
+            this.response = response;
+            const submittedQuestion = {
+              idQuestion: currentQuestion.id,
+              reponses: [response.output],
+            };
+            this.submittedQuestions.push(submittedQuestion);
+            console.log("submittedQuestions :", this.submittedQuestions);
+          } else {
+            console.error(
+              "La réponse ne contient pas la propriété 'output'.",
+              response
+            );
+          }
+        },
+        (error) => {
+          console.error("Erreur lors de l'exécution du script :", error);
+        }
+      );
+    } else {
+      console.error("this.editorRef.nativeElement est indéfini.");
+    }
+  }
+  onSubmitTest(id: number): void {
+    this.testService.submitTest(this.id).subscribe(
+      (response) => {
+        console.log("Test submitted successfully:", response);
+        this.alreadySubmitted = true;
+      },
+      (error) => {
+        console.error("Error submitting test:", error);
+      }
+    );
+  }
+
+  ngOnDestroy(): void {
+    this.onSubmitTest(this.id);
+    if (!this.alreadySubmitted && !this.isCompleted) {
+      this.cookieService.set("alreadySubmitted", "true");
+    }
   }
 }

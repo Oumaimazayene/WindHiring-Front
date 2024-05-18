@@ -7,6 +7,7 @@ import { DeleteQuestionTechDialogComponent } from "./delete-question-tech-dialog
 import { AfficheQuestionTechDialogComponent } from "./affiche-question-tech-dialog/affiche-question-tech-dialog.component";
 import { DomainsService } from "../../../service/domain-service/domains.service";
 import { Domaine } from "src/app/Models/domaine";
+import { ToastrService } from "ngx-toastr";
 
 @Component({
   selector: "app-questions-tech",
@@ -31,7 +32,8 @@ export class QuestionsTechComponent implements OnInit {
   constructor(
     private questionsTechService: QuestionsTechService,
     private DomainsService: DomainsService,
-    private dialog: MatDialog
+    private dialog: MatDialog,
+    private toastr: ToastrService
   ) {}
 
   ngOnInit(): void {
@@ -74,11 +76,13 @@ export class QuestionsTechComponent implements OnInit {
     this.questionsTechService.addQuestionTech(newQuestion).subscribe(
       (response) => {
         console.log("Question ajoutée avec succès : ", response);
-        // Réinitialisez le formulaire ici si nécessaire
+        this.toastr.success("Question Technique ajoutée avec succès");
+
         this.getAllQuestionsTech();
       },
       (error) => {
         console.error("Erreur lors de l'ajout de la question : ", error);
+        this.toastr.error("Erreur lors de l'ajout de la question");
       }
     );
   }

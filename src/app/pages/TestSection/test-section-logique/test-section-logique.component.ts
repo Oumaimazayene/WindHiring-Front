@@ -10,6 +10,7 @@ import { questionLog } from "src/app/Models/questionLog";
 import { Observable, catchError, throwError } from "rxjs";
 import { TestLogique } from "src/app/Models/TestLogique";
 import { TestService } from "../../../service/test-service/test.service";
+import { ToastrService } from "ngx-toastr";
 
 @Component({
   selector: "app-test-section-logique",
@@ -26,6 +27,8 @@ export class TestSectionLogiqueComponent implements OnInit {
   newSection: TestSectionLogique = {};
   tests: TestSectionLogique[] = [];
   nombreSectionsTest: number;
+  sommeQuestionsPrivees: number;
+  private toastr: ToastrService;
 
   constructor(
     private testSectionLogiqueService: TestSectionLogiqueService,
@@ -38,6 +41,12 @@ export class TestSectionLogiqueComponent implements OnInit {
     const uuid = this.authService.extractUUIDFromToken();
     this.getTestSectionsByUserUUID(uuid);
     this.getCountTestSectionsByUserUUID(uuid);
+    this.testSectionLogiqueService
+      .getSommeQuestionsPrivees(uuid)
+      .subscribe((sommeQuestionsPrivees: number) => {
+        this.sommeQuestionsPrivees = sommeQuestionsPrivees;
+        console.log("Somme des questions privées :", sommeQuestionsPrivees);
+      });
   }
 
   getTestSectionsByUserUUID(userUUID: string): void {
@@ -57,11 +66,21 @@ export class TestSectionLogiqueComponent implements OnInit {
     const uuid = this.authService.extractUUIDFromToken();
     this.testSectionLogiqueService
       .createTestSection(newSection, uuid)
-      .subscribe((data) => {
-        console.log("Section de test créée :", data);
-        this.getTestSectionsByUserUUID(uuid);
-        this.getTestSectionsByUserUUID(uuid);
-      });
+      .subscribe(
+        (data) => {
+          console.log("Section de test créée :", data);
+          this.toastr.success("Section de test créée avec succès");
+
+          this.getTestSectionsByUserUUID(uuid);
+        },
+        (error) => {
+          console.error(
+            "Erreur lors de la création de la section de test :",
+            error
+          );
+          this.toastr.error("Erreur lors de la création de la section de test");
+        }
+      );
   }
 
   openAddQuestionTechDialog(): void {

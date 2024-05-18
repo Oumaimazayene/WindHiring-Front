@@ -1,6 +1,6 @@
 import { HttpClient } from "@angular/common/http";
 import { Injectable } from "@angular/core";
-import { Observable } from "rxjs";
+import { Observable, catchError, throwError } from "rxjs";
 import { Domaine } from "src/app/Models/domaine";
 
 @Injectable({
@@ -17,7 +17,12 @@ export class DomainsService {
   }
 
   addDomaine(domaine: Domaine): Observable<Domaine> {
-    return this.http.post<Domaine>(this.apiUrl + "/add", domaine);
+    return this.http.post<Domaine>(this.apiUrl + "/add", domaine).pipe(
+      catchError((error) => {
+        // Gérer l'erreur ici
+        return throwError(error);
+      })
+    );
   }
   deleteDomaine(id: number): Observable<void> {
     return this.http.delete<void>(`${this.apiUrl}/${id}`);
@@ -28,5 +33,8 @@ export class DomainsService {
   }
   countDomains(): Observable<number> {
     return this.http.get<number>(`${this.apiUrl}/count`);
+  }
+  getDomainesByName(name: string): Observable<Domaine[]> {
+    return this.http.get<Domaine[]>(`${this.apiUrl}/filtername?name=${name}`);
   }
 }

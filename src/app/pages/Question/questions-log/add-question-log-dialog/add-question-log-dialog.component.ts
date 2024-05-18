@@ -90,7 +90,7 @@ export class AddQuestionLogDialogComponent implements OnInit {
     this.questionLogService.addQuestionLogic(formData).subscribe(
       (response) => {
         console.log("Question ajoutée avec succès :", response);
-        this.dialogRef.close();
+        this.dialogRef.close(this.newQuestion);
       },
       (error) => {
         console.error("Erreur lors de l'ajout de la question :", error);

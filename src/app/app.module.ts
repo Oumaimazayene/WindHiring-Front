@@ -40,7 +40,6 @@ import { TestSectionLogiqueComponent } from "./pages/TestSection/test-section-lo
 import { AddTestSectionDialogComponent } from "./pages/TestSection/test-section-logique/add-test-section-dialog/add-test-section-dialog.component";
 import { MatTabsModule } from "@angular/material/tabs";
 import { MatSelectModule } from "@angular/material/select";
-
 import { QuestionpriveLogComponent } from "./pages/QuestionPrivée/QuestionLogiquePri/questionprive-log/questionprive-log.component";
 import { AddQuestionPriveeLogDialogComponent } from "./pages/QuestionPrivée/QuestionLogiquePri/add-question-privee-log-dialog/add-question-privee-log-dialog.component";
 import { TestSectionTechComponent } from "./pages/TestSection/TestSection -Tech/test-section-tech/test-section-tech.component";
@@ -55,7 +54,11 @@ import { TestdetailsComponent } from "./pages/TestSection/list-test/testdetails/
 import { MatToolbarModule } from "@angular/material/toolbar";
 import { ListTestTechComponent } from "./pages/TestSection/TestSection -Tech/list-test-tech/list-test-tech.component";
 import { AddTestTechComponent } from "./pages/TestSection/TestSection -Tech/add-test-tech/add-test-tech.component";
-
+import { ChangePasswordComponent } from "./pages/change-password/change-password.component";
+import { MatSnackBarModule } from "@angular/material/snack-bar";
+import { ConfirmValidationComponent } from "./pages/user/confirm-validation/confirm-validation.component";
+import { MatProgressSpinnerModule } from "@angular/material/progress-spinner";
+import { MatPaginatorModule } from "@angular/material/paginator";
 @NgModule({
   imports: [
     BrowserAnimationsModule,
@@ -66,7 +69,6 @@ import { AddTestTechComponent } from "./pages/TestSection/TestSection -Tech/add-
     RouterModule,
     AppRoutingModule,
     ReactiveFormsModule,
-    ToastrModule.forRoot(),
     HttpClientModule,
     MatTableModule,
     MatFormFieldModule,
@@ -79,6 +81,14 @@ import { AddTestTechComponent } from "./pages/TestSection/TestSection -Tech/add-
     MatTabsModule,
     MatSelectModule,
     MatToolbarModule,
+    MatSnackBarModule,
+    MatProgressSpinnerModule,
+    ToastrModule.forRoot({
+      timeOut: 3000,
+      positionClass: "toast-top-right",
+      preventDuplicates: true,
+    }),
+    MatPaginatorModule,
   ],
   declarations: [
     AppComponent,
@@ -116,6 +126,8 @@ import { AddTestTechComponent } from "./pages/TestSection/TestSection -Tech/add-
     TestdetailsComponent,
     ListTestTechComponent,
     AddTestTechComponent,
+    ChangePasswordComponent,
+    ConfirmValidationComponent,
   ],
   providers: [],
   bootstrap: [AppComponent],

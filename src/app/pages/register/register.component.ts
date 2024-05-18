@@ -33,7 +33,6 @@ export class RegisterComponent implements OnInit {
   get formControls() {
     return this.registerForm.controls;
   }
-
   onSubmit(): void {
     if (this.registerForm.invalid) {
       Object.keys(this.registerForm.controls).forEach((field) => {
@@ -51,7 +50,7 @@ export class RegisterComponent implements OnInit {
     this.authService.register(this.registerForm.value).subscribe(
       (response) => {
         this.toastr.success("Inscription réussie !", "Succès");
-        this.router.navigate(["/Home"]);
+        this.router.navigate(["/home/response"]);
       },
       (error) => {
         this.toastr.error("Erreur lors de l'inscription.", "Erreur");

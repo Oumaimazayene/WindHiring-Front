@@ -3,6 +3,8 @@ import { MatDialog } from "@angular/material/dialog";
 import { QuestionLogicService } from "src/app/service/question-logique/questions-logique.service"; // Assurez-vous d'importer le service approprié
 import { ViewQuestionLogDialogComponent } from "./view-question-log-dialog/view-question-log-dialog.component";
 import { questionLog } from "src/app/Models/questionLog";
+import { ToastrService } from "ngx-toastr";
+
 import { AddQuestionLogDialogComponent } from "./add-question-log-dialog/add-question-log-dialog.component";
 import { DeleteQuestionLogDialogComponent } from "src/app/pages/Question/questions-log/delete-question-log-dialog/delete-question-log-dialog.component";
 @Component({
@@ -25,7 +27,8 @@ export class QuestionsLogComponent implements OnInit {
 
   constructor(
     private questionLogicService: QuestionLogicService,
-    private dialog: MatDialog
+    private dialog: MatDialog,
+    private toastr: ToastrService
   ) {}
 
   ngOnInit(): void {
@@ -105,17 +108,20 @@ export class QuestionsLogComponent implements OnInit {
     formData.append("imageFile", imageFile);
     formData.append("questionLogicDtoJson", questionLogicDtoJson);
 
-    this.questionLogicService
-      .addQuestionLogic(formData) // Pass formData instead of imageFile
-      .subscribe(
-        (response) => {
-          this.getAllQuestions();
-        },
-        (error) => {
-          console.error("Erreur lors de l'ajout de la question :", error);
-        }
-      );
+    this.questionLogicService.addQuestionLogic(formData).subscribe(
+      (response) => {
+        console.log("Question ajoutée avec succès :", response);
+        this.toastr.success("Question logique ajoutée avec succès");
+
+        this.getAllQuestions();
+      },
+      (error) => {
+        console.error("Erreur lors de l'ajout de la question :", error);
+        this.toastr.error("Erreur lors de l'ajout de la question");
+      }
+    );
   }
+
   deleteQuestion(id: number): void {
     this.questionLogicService.deleteQuestionLogic(id).subscribe(
       () => {

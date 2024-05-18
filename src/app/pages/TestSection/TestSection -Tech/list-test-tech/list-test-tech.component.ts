@@ -94,6 +94,7 @@ export class ListTestTechComponent implements OnInit {
     });
 
     dialogRef.afterClosed().subscribe((result) => {
+      this.getTests(testSectionTechUUID);
       console.log("The dialog was closed");
     });
   }
